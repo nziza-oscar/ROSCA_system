@@ -22,9 +22,9 @@ export default function Dashboard() {
         <main className="flex-1 overflow-y-auto p-4">
           {/* Stats Section */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-            <StatCard title="Users" value="15" color="blue" />
-            <StatCard title="DEBTORS" value="5" color="purple" />
-            <StatCard title="SAVINGS" value="120,000frw" color="red" />
+            <StatCard title="System Users" value="15" color="blue" />
+            <StatCard title="borrowers" value="5" color="purple" />
+            <StatCard title="Money SAVINGS" value="120,000frw" color="red" />
           </div>
 
           {/* Tables Section */}

@@ -259,5 +259,8 @@ td{
   @apply text-gray-600 text-sm font-semibold block pb-1;
 }
 .input{
-  @apply w-full border px-2 placeholder:text-sm py-[7px] border-gray-300  rounded focus:outline-blue-500;
+  @apply w-full border px-2 placeholder:text-sm py-[7px] border-gray-300  rounded focus:outline-blue-500 resize-none;
+}
+.hidden{
+  display: none !important;
 }

@@ -269,7 +269,7 @@ export default function UserManagement() {
                   onClick={() => handleSort("name")}
                 >
                   <div className="flex items-center">
-                    User
+                    Names
                     {sortBy === "name" && <ArrowUpDown className="ml-1 h-4 w-4 text-gray-400" />}
                   </div>
                 </th>

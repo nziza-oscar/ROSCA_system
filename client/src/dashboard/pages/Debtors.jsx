@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import TableSection from '../components/TableSection'
 import { Book, Plus, X } from 'lucide-react'
 import Select from "react-select"
@@ -17,6 +17,7 @@ const Debtors = () => {
   { value: 'Johnson', label: 'Johnson' },
   { value: 'Emily', label: 'Emily' },
 ]
+const [showModal, setShowModal] = useState(false)
 
 
   return (
@@ -26,7 +27,7 @@ const Debtors = () => {
         <div className='flex justify-between py-2'>
             <div className='flex gap-2 items-center'>
                 <button className='flex items-center gap-1 bg-green-500 px-2 py-1 rounded text-white btn'> <Book size={16}/> Excel</button>
-                <button className='btn bg-navy-900 flex'> <Plus size={16}/> Add</button>
+                <button className='btn bg-navy-900 flex' onClick={()=> setShowModal(true)}> <Plus size={16}/> Add</button>
             </div>
             <div>
             <input type='text' placeholder='Search...' className='w-64 border px-1 py-2 rounded border-gray-300 placeholder:text-sm focus:outline-indigo-500 text-slate-600'/>
@@ -71,11 +72,11 @@ const Debtors = () => {
       </table>
     </TableSection>
 
-    <div className='modal'>
+    <div className={`modal ${!showModal&& `hidden`}`}>
         <div className="modal-content modal-sm">
             <div className="modal-header">
                 <h3 className='uppercase font-bold text-slate-700'>Add Debt</h3>
-                <button className='modal-close btn'><X size={16}/></button>
+                <button className='modal-close btn' onClick={()=>setShowModal(false)}><X size={16}/></button>
             </div>
           
           <div className="modal-body py-3 px-4 flex flex-col gap-3">

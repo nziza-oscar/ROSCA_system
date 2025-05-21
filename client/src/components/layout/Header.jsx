@@ -29,7 +29,7 @@ const Header = () => {
 
       new window.google.translate.TranslateElement(
       {
-        pageLanguage: "en",
+        pageLanguage: "rw",
         autoDisplay: false,
         layout:window.google.translate.TranslateElement.FloatPosition.TOP_LEFT
       },
@@ -42,15 +42,6 @@ const Header = () => {
   intervalId = setInterval(googleTranslateElementInit,100)
   
   },[])
-  // useEffect(() => {
-  //   var addScript = document.createElement("script");
-  //   addScript.setAttribute(
-  //     "src",
-  //     "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
-  //   );
-  //   document.body.appendChild(addScript);
-  //   window.googleTranslateElementInit = googleTranslateElementInit;
-  // }, []);
 
   return (
       <nav className="bg-blue-500 text-white sticky top-0 z-40">
@@ -64,7 +55,7 @@ const Header = () => {
                   <span className="font-bold text-xs -top-2">Saving Group</span>
               </div>
           </div>
-          <div className="hidden md:flex space-x-8">
+          <div className="flex space-x-8">
             <NavLink to="/" className="py-2 border-b-2 border-white">
               Home
             </NavLink>
