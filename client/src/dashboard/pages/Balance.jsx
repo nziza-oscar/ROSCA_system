@@ -6,7 +6,7 @@ const Balance = () => {
     <div>
       <div className="banner flex py-5 bg-navy-900 px-5 text-gray-100 rounded flex  justify-between items-center ">
          <div>
-           <h4>Balance</h4>
+           <h4>Amount Balance</h4>
           <h3 className='text-2xl text-gray-400 font-bold'>500,000 FRW</h3>
          </div>
          <div><button className='btn bg-purple-500'>Deposit</button></div>
