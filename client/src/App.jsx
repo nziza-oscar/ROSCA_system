@@ -20,6 +20,7 @@ import ProtectedRoutes from "./lib/ProtectedRoutes"
 import {ProtectedPage} from "./lib/ProtectedRoutes"
 const Debtors =  lazy(()=> import("./dashboard/pages/Debtors")) 
 const Reports = lazy(()=>import("./dashboard/pages/Reports"))
+const Balance = lazy(()=>import("./dashboard/pages/Balance"))
 
 // ___________end dashboard___________
 const router = createBrowserRouter(
@@ -33,6 +34,7 @@ const router = createBrowserRouter(
         <Route path="debtors" element={<Delaying><Debtors/></Delaying>}/>
         <Route path="reports" element={<Delaying><Reports/></Delaying>}/>
         <Route path="settings" element={<Settings />} />
+        <Route path="balance" element={<Delaying><Balance/></Delaying>} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
 

@@ -1,6 +1,6 @@
 "use client"
 
-import { Home, Users, DollarSign, BarChart2, MessageSquare, Settings, LogOut, Book } from "lucide-react"
+import { Home, Users, DollarSign, BarChart2, MessageSquare, Settings, LogOut, Book, Weight } from "lucide-react"
 import { useState } from "react"
 import { NavLink } from "react-router-dom"
 import logo from "../../assets/logo.png"
@@ -11,6 +11,7 @@ export default function Sidebar() {
     { name: "Dashboard", icon: Home , to:"/dashboard/home"},
     { name: "Debtors", icon: DollarSign, to:"/dashboard/debtors" },
     { name: "Users", icon: Users, to:"/dashboard/users" },
+    { name: "Balance", icon: Weight, to:"/dashboard/balance" },
     { name: "payers", icon: Book, to:"/dashboard/transaction" },
     { name: "Reports", icon: BarChart2, to:"/dashboard/reports" },
     { name: "Feedbacks", icon: MessageSquare, to:"/dashboard/feedbacks" },
