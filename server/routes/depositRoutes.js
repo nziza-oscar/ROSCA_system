@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const {isAuthorized} = require("../middleware/Authorized")
-const depositController = require("../controllers/depositController");
+const depositController = require("../controllers/DepositController");
 
 router.post("/", isAuthorized,depositController.createDeposit);
 router.get("/", isAuthorized,depositController.getAllDeposits);
