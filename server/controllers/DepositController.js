@@ -57,3 +57,37 @@ exports.deleteDeposit = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+
+exports.getDepositChartData = async (req, res) => {
+  try {
+    const matchStage = req.userRole === 'admin' ? {} : { depositedBy: req.userId };
+
+    const result = await Deposit.aggregate([
+      { $match: matchStage },
+      {
+        $group: {
+          _id: {
+            year: { $year: "$depositedAt" },
+            month: { $month: "$depositedAt" }
+          },
+          totalAmount: { $sum: "$amount" },
+          count: { $sum: 1 }
+        }
+      },
+      {
+        $sort: { "_id.year": 1, "_id.month": 1 }
+      }
+    ]);
+
+    const formatted = result.map(item => ({
+      month: `${item._id.year}-${String(item._id.month).padStart(2, "0")}`,
+      totalAmount: item.totalAmount,
+      count: item.count
+    }));
+
+    res.json(formatted);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
