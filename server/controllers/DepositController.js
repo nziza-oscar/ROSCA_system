@@ -63,8 +63,9 @@ exports.getDepositChartData = async (req, res) => {
   try {
     const matchStage = req.userRole === 'admin' ? {} : { depositedBy: req.userId };
 
+    // return res.json(matchStage)
     const result = await Deposit.aggregate([
-      { $match: matchStage },
+      { $match:{} },
       {
         $group: {
           _id: {
@@ -86,7 +87,7 @@ exports.getDepositChartData = async (req, res) => {
       count: item.count
     }));
 
-    res.json(formatted);
+    res.json(result);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

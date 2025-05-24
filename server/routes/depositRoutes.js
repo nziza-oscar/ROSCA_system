@@ -5,9 +5,9 @@ const depositController = require("../controllers/depositController");
 
 router.post("/", isAuthorized,depositController.createDeposit);
 router.get("/", isAuthorized,depositController.getAllDeposits);
-router.get("/:id",isAuthorized, depositController.getDepositById);
+router.get("/:id/get",isAuthorized, depositController.getDepositById);
 router.put("/:id/update", isAuthorized,depositController.updateDeposit);
 router.delete("/:id", isAuthorized,depositController.deleteDeposit);
-router.get("/chart-data", depositController.getDepositChartData);
+router.get("/chart-data", isAuthorized,depositController.getDepositChartData);
 
 module.exports = router;
