@@ -22,8 +22,11 @@ const depositSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ["pending", "completed", "failed", "cancelled"],
+    enum: ["pending", "approved", "rejected", "cancelled"],
     default: "pending"
+  },
+  Comment:{
+    type: String
   },
   transactionId: {
     type: String,

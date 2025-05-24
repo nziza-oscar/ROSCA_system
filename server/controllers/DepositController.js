@@ -27,14 +27,19 @@ exports.getAllDeposits = async (req, res) => {
 };
 
 
-exports.getDepositById = async (req, res) => {
+exports.getDepositById = async (req, res, next) => {
   try {
     const deposit = await Deposit.findById(req.params.id).populate("depositedBy confirmedBy");
-    if (!deposit) return res.status(404).json({ message: "Not found" });
-    res.json(deposit);
+    if (!deposit) return res.status(404).json({ message: "Not found maybe it have been deleted" });
+    req.deposit = deposit
+    next()
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: err.message });
   }
+};
+
+exports.getDeposit = async (req, res) => {
+ return res.json(req.deposit)
 };
 
 exports.updateDeposit = async (req, res) => {
@@ -43,18 +48,44 @@ exports.updateDeposit = async (req, res) => {
     if (!updated) return res.status(404).json({ message: "Not found" });
     res.json(updated);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    return res.status(400).json({ error: err.message });
   }
 };
+
+
+exports.approveDeposit = async (req, res) => {
+
+  try {
+    if(req.userRole !== "admin") return res.status(403).json({message: "Authorized action"})
+    const updated = await Deposit.findByIdAndUpdate(req.params.id, {status: "approved"}, { new: true });
+    if (!updated) return res.status(404).json({ message: "Not found" });
+   return res.json(updated);
+  } catch (err) {
+    return res.status(400).json({ error: err.message });
+  }
+};
+
+exports.rejectDeposit = async (req, res) => {
+
+  try {
+    if(req.userRole !== "admin") return res.status(403).json({message: "Authorized action"})
+    const updated = await Deposit.findByIdAndUpdate(req.params.id, {status: "rejected",comment: req.body.comment}, { new: true });
+    if (!updated) return res.status(404).json({ message: "Not found" });
+    return res.json(updated);
+  } catch (err) {
+   return res.status(400).json({ error: err.message });
+  }
+};
+
 
 exports.deleteDeposit = async (req, res) => {
   try {
     if(req.userRole !== "admin") return res.status(403).json({message: "Request admin for removal"})
     const deleted = await Deposit.findByIdAndDelete(req.params.id);
     if (!deleted) return res.status(404).json({ message: "Not found" });
-    res.json({ message: "Deleted successfully" });
+   return  res.json({ message: "Deleted successfully" });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+   return res.status(500).json({ error: err.message });
   }
 };
 
