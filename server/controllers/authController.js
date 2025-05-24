@@ -3,7 +3,6 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto'); // For generating reset tokens
 const sendEmail = require('../utils/sendEmail'); // Utility for sending emails
-const order = require("../models/Order")
 // Helper function to generate JWT token
 const generateToken = (userId) => {
   return jwt.sign({ id: userId }, process.env.JWT_SECRET, {
@@ -41,6 +40,7 @@ exports.createUser = async(req,res)=>{
     const { name,email,phonenumber,role,department,status,password } = req.body
      const userExist = await User.findOne({email: email})
 
+      if(req.userRole !== "admin") return res.status(403).json({message: "Unauthorized action"})
      if(userExist) return res.status(403).json({message: "User already exist"})
      const newUser = new User({
       name,email,phone:phonenumber,role,department,status,password
