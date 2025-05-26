@@ -140,65 +140,6 @@ useEffect(()=>{
       </div>
     }
 
-  <div className={`${showModal?`modal`:`hidden`}`}>
-      <div className="modal-content modal-sm">
-          <div className="modal-header">
-             <h3 className='title uppercase font-bold'>Deposit</h3>
-             <div>
-              <button className='modal-close btn' onClick={handleModal}><X size={16}/></button>
-             </div>
-          </div>
-
-         <FormikProvider value={formik} className="py-3">
-           
-           {success && <div className='success'>{success}</div>}
-           {error && <div className='error'>{error}</div>}
-
-            <Form encType="multipart/form-data">
-                <div>
-                <label className='label'>Amount</label>
-                <input type='number' step={0.001} name='amount' className='input bg-gray-200' placeholder='Enter amount....'
-                 {...formik.getFieldProps("amount")}
-                 readOnly
-                />
-                {
-                  formik.errors.amount && formik.touched.amount && <div className='py-1 text-red-500 text-sm'>{formik.errors.amount}</div>
-                }
-              </div>
-
-              <div>
-                <label className='label'>Proof</label>
-                <input type='file' step={0.001} name='proof' className='input'
-                   ref={photoInput}
-                  onChange={(event)=>{
-                    formik.setFieldValue("proof",event.currentTarget.files[0])
-                  }}
-                accept="image/*"
-              
-                />
-                 {
-              formik.errors.proof && <div className="text-red-500 py-2 font-bold">{formik.errors.proof}*</div>
-            }
-              </div>
-
-              <div className="py-2 border-b border-gray-200">
-                <button disabled={loading} type='submit' className='btn bg-purple-500 w-64 text-center'>{loading ?"Saving":"Send"}</button>
-
-              </div>
-            </Form>
-         </FormikProvider>
- 
-        <div className='py-2 flex gap-3 items-center'>
-          <h3 className='text-sm'>Payment Code: <b>*182*8*1*603403#</b></h3>
-          <span className='text-gray-400'>|</span>
-          <h3 className='text-sm'>Names: <b>Steven</b></h3>
-        </div>
-        <marquee><b className='text-sm'>N.B: Remember to take phone screenshoot photo after paying</b>.</marquee>
-      </div>
-  </div>
-
-  <DeleteModal showDelete={showDelete} cancel={handleCancel} confirm={handleConfirm} message="Are you sure you want to delete this deposit?" title="Delete Deposit"/>
-
       <div className="my-3">
         
           {success && <div className='success'>{success}</div>}

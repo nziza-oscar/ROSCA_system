@@ -30,9 +30,4 @@ export const getSkippedDays= (year,month) => API.get(`/deposit/calendar-skipped/
 
 
 export const fetchUsers= () => API.get('/users');
-
-
-
-
-
-
+export const getPendingDeposits= (startDate,endDate)=> API.get(`/deposit/requests?start=${startDate}&end=${endDate}`)

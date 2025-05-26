@@ -81,3 +81,19 @@ export const  skippedDeposit = createAsyncThunk("Deposit/skipped",
     }
 )
 
+
+
+export const  getPendingDeposits = createAsyncThunk("Deposit/pending",
+    async(FormData,thunkAPI)=>{
+        try {
+            const {data} = await API.getPendingDeposits(FormData.year,FormData.month)
+            return {status: "SUCCESS", data: data}
+        } catch (error) {
+            return thunkAPI.rejectWithValue({
+                status:"ERROR",
+                message: error.response?.data?.message || "Failed to "
+            })
+        }
+    }
+)
+

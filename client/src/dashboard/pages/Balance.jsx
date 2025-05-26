@@ -131,6 +131,7 @@ useEffect(()=>{
     }
 
   
+  <marquee>Hello , <b>{user?.name}</b> You have a pending deposit request for today, please wait for admin to review and approve your deposit. Thanks!</marquee>
   <div className={`${showModal?`modal`:`hidden`}`}>
       <div className="modal-content modal-sm">
           <div className="modal-header">

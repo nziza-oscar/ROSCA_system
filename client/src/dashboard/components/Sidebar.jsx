@@ -18,7 +18,7 @@ export default function Sidebar() {
     { name: "Dashboard", icon: Home , to:"/dashboard/home"},
     { name: "Users", icon: Users , to:"/dashboard/users"},
     { name: "Savings", icon: Book , to:"/dashboard/savings"},
-    { name: "Deposit Request", icon: Briefcase , to:"/dashboard/savings"},
+    { name: "Deposit Request", icon: Briefcase , to:"/dashboard/deposit-request"},
     { name: "Historique", icon:BookMarked , to:"/dashboard/historic"},
    
   ]

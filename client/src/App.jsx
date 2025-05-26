@@ -24,6 +24,7 @@ const Reports = lazy(()=>import("./dashboard/pages/Reports"))
 const Balance = lazy(()=>import("./dashboard/pages/Balance"))
 const RegisterPage = lazy(()=>import("./pages/RegisterPage"))
 const Savings = lazy(()=>import("./dashboard/pages/Savings"))
+const DepositRequest = lazy(()=>import("./dashboard/pages/DepositRequest"))
 
 // ___________end dashboard___________
 const router = createBrowserRouter(
@@ -41,6 +42,7 @@ const router = createBrowserRouter(
         <Route path="settings" element={<Settings />} />
         <Route path="balance" element={<Delaying><Balance/></Delaying>} />
         <Route path="savings" element={<Delaying><Savings/></Delaying>} />
+        <Route path="deposit-request" element={<Delaying><DepositRequest/></Delaying>} />
 
         <Route path="*" element={<NotFoundPage />} />
       </Route>

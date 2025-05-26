@@ -105,20 +105,24 @@ export default function Header({ toggleSidebar, user, logout }) {
 
   return (
     <header className="bg-white h-16 px-4 flex items-center justify-between border-b border-gray-200 shadow-sm">
-      <button onClick={toggleSidebar} className="p-2 rounded-md bg-slate-600 text-white">
+      
+      <div className="flex relative gap-2 items-center">
+        <button onClick={toggleSidebar} className="p-2 rounded-md bg-slate-600 text-white">
         <Menu size={24} />
       </button>
+       <div  className="lg:hidden flex flex-col relative">
+          <h3 className="text-xl font-bold text-green-600 p-0 m-0">ISHEMA</h3>
+          <small className="text-xs  whitespace-nowrap  text-center w-full" style={{fontSize: 10}}>Saving Group</small>
+        </div>
+      </div>
 
       <div className="flex items-center space-x-4">
         <div id="google_translate_element" className="hidden lg:block" ref={googleTranslateRef}></div>
-        <div  className=" lg:hidden flex flex-col relative">
-          <h3 className="text-xl font-bold text-green-600 p-0 m-0">ISHEMA</h3>
-          <small className="text-xs absolute whitespace-nowrap -bottom-2 text-center w-full" style={{fontSize: 10}}>Saving Group</small>
-        </div>
+       
 
-         <div className="flex items-center space-x-4">
+         <div className="flex items-center justify-between space-x-4">
         {/* Notifications Dropdown */}
-        <div className="relative" ref={notificationDropdownRef}>
+        <div className="relative notification" ref={notificationDropdownRef}>
           <button
             onClick={() => setNotificationDropdownOpen(!notificationDropdownOpen)}
             className="relative p-2 hover:bg-gray-100 rounded-full transition-colors"
@@ -174,7 +178,7 @@ export default function Header({ toggleSidebar, user, logout }) {
             onClick={() => setUserDropdownOpen(!userDropdownOpen)}
             className="flex items-center hover:bg-gray-100 rounded-lg px-3 py-2 transition-colors"
           >
-            <span className="font-medium text-xs text-slate-700">Hi, {user.name}</span>
+            <span className="font-medium text-xs text-slate-700 whitespace-nowrap">Hi, {user.name}</span>
             <ChevronDown
               size={16}
               className={`ml-2 text-gray-500 transition-transform ${userDropdownOpen ? "rotate-180" : ""}`}

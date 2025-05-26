@@ -69,7 +69,7 @@ const DepositSlice = createSlice({
     .addCase(skippedDeposit.fulfilled, (state,action)=>{
       state.loading = false
       state.debtsEvents = action.payload.data
-      console.log(action.payload.data)
+     
     })
     .addCase(skippedDeposit.rejected, (state,action)=>{
       state.loading = false
