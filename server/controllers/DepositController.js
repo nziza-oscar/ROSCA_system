@@ -387,3 +387,31 @@ exports.monthlySavings = async(req,res)=>{
     return res.status(405).json({message: error.message})
   }
 }
+
+
+exports.depositRequests = async (req, res) => {
+  try {
+    const { start:startDate, end:endDate } = req.query;
+
+    if (!startDate || !endDate) {
+      return res.status(400).json({ error: "Start date and end date are required" });
+    }
+
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    end.setHours(23, 59, 59, 999); // Include the whole end day
+
+    const deposits = await Deposit.find({
+      status: 'pending',
+      depositedAt: {
+        $gte: start,
+        $lte: end
+      }
+    }).populate('depositedBy', 'name email phone idno').exec(); // Optional: populate user info
+
+    res.json(deposits);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+

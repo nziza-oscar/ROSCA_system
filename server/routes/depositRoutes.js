@@ -16,7 +16,7 @@ router.post("/:id/reject", isAuthorized,depositController.rejectDeposit);
 router.get("/stats", isAuthorized, depositController.getUserDepositStats)
 router.get("/calendar-skipped/:year/:month", isAuthorized, depositController.skippedDays)
 router.get('/monthly-approved-sum', depositController.monthlySavings);
-router.get('/requests', depositController.monthlySavings);
+router.get('/requests', depositController.depositRequests);
 
 router.param("id",depositController.getDepositById)
 module.exports = router;
