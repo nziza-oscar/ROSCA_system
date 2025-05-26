@@ -2,23 +2,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs'); // For password hashing
 const validator = require('validator'); // For email validation
 
-const addressSchema = new mongoose.Schema(
-  {
-    street:{type:String,required:false},
-    province:String,
-    district:String,
-    sector:String,
-    cell:String,
-    village:String, 
-    comment:String,
-    status: {
-      type: String,
-      enum:['active','default','inactive'],
-      default: 'active'
-    },
-  
-  },{timestamps: true}
-)
+
 const UserSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -27,8 +11,10 @@ const UserSchema = new mongoose.Schema({
     minlength: [2, 'Name must be at least 2 characters long'],
     maxlength: [50, 'Name cannot exceed 50 characters'],
   },
-  department:{
-    type:String
+
+  position:{
+    type:Number,
+    default:1
   },
   
   email: {
@@ -42,6 +28,11 @@ const UserSchema = new mongoose.Schema({
       message: 'Please provide a valid email address',
     },
   },
+  idno:{
+    type: Number,
+    required:[true, "ID is required"],
+    unique:true
+  },
   password: {
     type: String,
     required: [true, 'Password is required'],
@@ -50,7 +41,7 @@ const UserSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['user', 'admin','manager','finance','carrier'],
+    enum: ['user', 'admin'],
     default: 'user',
   },
   dob:String,
@@ -65,7 +56,7 @@ const UserSchema = new mongoose.Schema({
       message: 'Please provide a valid phone number',
     },
   },
-  address: [addressSchema],
+
   settings: {
     language:String,
     currency: String,
@@ -99,6 +90,14 @@ UserSchema.methods.comparePassword = async function (candidatePassword) {
 UserSchema.pre('save', function (next) {
   this.updatedAt = Date.now();
   next();
+});
+UserSchema.set('toObject', { virtuals: true });
+UserSchema.set('toJSON', { virtuals: true });
+
+UserSchema.virtual("deposits", {
+  ref: "deposits",
+  localField: "_id",
+  foreignField: "depositedBy"
 });
 
 module.exports = mongoose.model('User', UserSchema);

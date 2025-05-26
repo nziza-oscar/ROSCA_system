@@ -23,12 +23,24 @@ exports.userInfo = async(req,res)=>{
 // fetch users
 exports.fetchUsers = async(req,res)=>{
   try {
-     const data = await User.find()
+    if(req.userRole != "admin") return res.json([])
+     const data = await User.find().populate("deposits").exec()
      return res.status(200).json(data)
   } catch (error) {
      return res.status(404).json({error:error.messae,message: "Failed to fetch users"})
   }
 }
+
+exports.systemUsers = async(req,res)=>{
+  try {
+    if(req.userRole != "admin") return res.json([])
+     const data = await User.find().countDocuments()
+     return res.status(200).json({systemUsers: data})
+  } catch (error) {
+     return res.status(404).json({error:error.messae,message: "Failed to fetch users"})
+  }
+}
+
 
 
 //  create user
@@ -37,18 +49,15 @@ exports.fetchUsers = async(req,res)=>{
 exports.createUser = async(req,res)=>{
   try {
     //  check if user does not exit
-    const { name,email,phonenumber,role,department,status,password } = req.body
+    const { name,email,phone,role,password,idno } = req.body
      const userExist = await User.findOne({email: email})
 
-      if(req.userRole !== "admin") return res.status(403).json({message: "Unauthorized action"})
-     if(userExist) return res.status(403).json({message: "User already exist"})
-     const newUser = new User({
-      name,email,phone:phonenumber,role,department,status,password
-      })
+    if(req.userRole !== "admin") return res.status(403).json({message: "Unauthorized action"})
+    if(userExist) return res.status(403).json({message: "User already exist"})
+     const newUser = new User({name,email,phone,role,password,idno})
      await newUser.save()
 
      return res.json(newUser)
-     
   } catch (error) {
     return res.status(400).json({message: error.message})
   }
@@ -60,7 +69,7 @@ exports.createUser = async(req,res)=>{
 
 exports.register = async (req, res) => {
   try {
-    const { name, email, password, phone,role } = req.body;
+    const { names:name, email, password, phone,role,idno, position } = req.body;
 
     // Check if user already exists
     const existingUser = await User.findOne({ email });
@@ -74,6 +83,8 @@ exports.register = async (req, res) => {
       email,
       password,
       phone,
+      position,
+      idno,
       role
     });
 

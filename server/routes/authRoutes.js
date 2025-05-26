@@ -8,6 +8,7 @@ router.post('/register', authController.register);
 router.get('/my-data',isAuthorized, authController.userInfo);
 router.post('/newuser',isAuthorized, authController.createUser);
 router.get('/users',isAuthorized, authController.fetchUsers);
+router.get('/system-users',isAuthorized, authController.systemUsers);
 
 // Login user
 router.post('/login', authController.login);

@@ -1,9 +1,16 @@
 const Deposit = require("../models/deposit");
-
+const {uploadToCloudinary,deleteFromCloudinary} = require("./cloudinaryService")
+const mongoose = require("mongoose")
 exports.createDeposit = async (req, res) => {
   try {
-    let deposit = new Deposit(req.body);
-      deposit.depositedBy = req.userId
+    const {amount} = req.body
+    if(!req.file) return res.json({message: "No proof were given"})
+    if(!req.userId) return res.status(403).json({message: "Unauthorized action"})
+    const fileBuffer = req.file.buffer
+    const result = await uploadToCloudinary(fileBuffer)
+    
+    let deposit = new Deposit({amount: amount, proof:{url: result.secure_url, public_id: result.public_id}});
+        deposit.depositedBy = req.userId
     const saved = await deposit.save();
     res.status(201).json(saved);
   } catch (err) {
@@ -17,10 +24,36 @@ exports.getAllDeposits = async (req, res) => {
 
     if (req.userRole !== 'admin') {
       filter.depositedBy = req.userId;
+      
     }
 
+    const userId = req.userId;
+    const condition = userId&& req.userRole=="user" ? {depositedBy: new mongoose.Types.ObjectId(userId) } : {}
+    const result = await Deposit.aggregate([
+      { $match: condition },
+      {
+        $group: {
+          _id: null,
+          totalAmount: { $sum: "$amount" },
+          approvedAmount: {
+            $sum: {
+              $cond: [{ $eq: ["$status", "approved"] }, "$amount", 0]
+            }
+          },
+          rejectedAmount: {
+            $sum: {
+              $cond: [{ $eq: ["$status", "rejected"] }, "$amount", 0]
+            }
+          },
+        }
+      }
+    ]);
+
+    const stats = result[0] || { totalAmount: 0, approvedAmount: 0, rejectedAmount:0 };
+
+
     const deposits = await Deposit.find(filter).populate("depositedBy confirmedBy");
-    res.json(deposits);
+    res.json({deposits, stats});
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -80,10 +113,15 @@ exports.rejectDeposit = async (req, res) => {
 
 exports.deleteDeposit = async (req, res) => {
   try {
-    if(req.userRole !== "admin") return res.status(403).json({message: "Request admin for removal"})
+    // if(req.userRole !== "admin") return res.status(403).json({message: "Request admin for removal"})
+    const findDeposit = await Deposit.findById(req.params.id)
+    if(!findDeposit) return res.status(404).json({message: "Deposit not found"})
+    const result = await deleteFromCloudinary(findDeposit.proof.public_id)
     const deleted = await Deposit.findByIdAndDelete(req.params.id);
+    
     if (!deleted) return res.status(404).json({ message: "Not found" });
-   return  res.json({ message: "Deleted successfully" });
+    
+   return  res.json({ message: "Deleted successfully",id:req.params.id, result });
   } catch (err) {
    return res.status(500).json({ error: err.message });
   }
@@ -123,3 +161,229 @@ exports.getDepositChartData = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+
+exports.getUserDepositStats = async (req, res) => {
+  try {
+    const userId = req.userId; // or req.user._id if from auth
+    const condition = userId ? {depositedBy: new mongoose.Types.ObjectId(userId) } : {}
+    const result = await Deposit.aggregate([
+      { $match: condition },
+      {
+        $group: {
+          _id: null,
+          totalAmount: { $sum: "$amount" },
+          approvedAmount: {
+            $sum: {
+              $cond: [{ $eq: ["$status", "approved"] }, "$amount", 0]
+            }
+          },
+          rejectedAmount: {
+            $sum: {
+              $cond: [{ $eq: ["$status", "rejected"] }, "$amount", 0]
+            }
+          },
+        }
+      }
+    ]);
+
+    const stats = result[0] || { totalAmount: 0, approvedAmount: 0, rejectedAmount:0 };
+
+    res.json(stats);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+
+
+const getSkippedDays = async (userId, year, month) => {
+  // Step 1: Calculate start and end dates for the month
+  const start = new Date(year, month - 1, 1);
+  const end = new Date(year, month, 0, 23, 59, 59, 999); // last day of month
+
+  // Step 2: Fetch deposits
+  const deposits = await Deposit.find({
+    depositedBy: userId,
+    depositedAt: {
+      $gte: start,
+      $lte: end
+    }
+  });
+
+  // Step 3: Create full list of dates in the month
+  const totalDays = new Date(year, month, 0).getDate(); // days in month
+  const allDates = [];
+  for (let day = 1; day <= totalDays; day++) {
+    const d = new Date(year, month - 1, day);
+    allDates.push(d.toISOString().split('T')[0]);
+  }
+
+  // Step 4: Get unique deposit dates
+  const depositedDates = [...new Set(deposits.map(d =>
+    new Date(d.depositedAt).toISOString().split('T')[0]
+  ))];
+
+  // Step 5: Find missing dates
+  const skippedDates = allDates.filter(date => !depositedDates.includes(date));
+
+  return skippedDates;
+};
+
+
+
+// const getSkippedDaysEvents = async (userId, year, month) => {
+//   const DAILY_AMOUNT = 2000;
+
+//   const start = new Date(year, month - 1, 1);
+//   const end = new Date(year, month, 0, 23, 59, 59, 999);
+
+//   const deposits = await Deposit.find({
+//     depositedBy: userId,
+//     depositedAt: { $gte: start, $lte: end }
+//   });
+
+//   const totalDays = new Date(year, month, 0).getDate();
+//   const allDates = [];
+//   for (let day = 1; day <= totalDays; day++) {
+//     const d = new Date(year, month - 1, day);
+//     allDates.push(d.toISOString().split('T')[0]);
+//   }
+
+//   const depositedDates = [...new Set(deposits.map(d =>
+//     new Date(d.depositedAt).toISOString().split('T')[0]
+//   ))];
+
+//   const skippedDates = allDates.filter(date => !depositedDates.includes(date));
+
+//   return skippedDates.map((date,index) => ({
+//     id: index+1,
+//     title: `have debt - ${DAILY_AMOUNT} FRW`,
+//     start: date,
+//     color: '#ff0000'
+//   }));
+// };
+
+
+const getSkippedDaysEvents = async (userId, year, month) => {
+  const DAILY_AMOUNT = 2000;
+
+  const start = new Date(year, month - 1, 1);
+  const end = new Date(year, month, 0, 23, 59, 59, 999);
+
+  const deposits = await Deposit.find({
+    depositedBy: userId,
+    depositedAt: { $gte: start, $lte: end }
+  });
+
+  const totalDays = new Date(year, month, 0).getDate();
+  const events = [];
+
+  for (let day = 1; day <= totalDays; day++) {
+    const currentDate = new Date(year, month - 1, day);
+    const dateStr = currentDate.toISOString().split('T')[0];
+
+    const depositForDay = deposits.find(d =>
+      new Date(d.depositedAt).toISOString().split('T')[0] === dateStr
+    );
+
+    if (depositForDay && depositForDay.status === 'approved') {
+      events.push({
+        id: `paid-${day}`,
+        title: `Paid - ${DAILY_AMOUNT} FRW`,
+        start: dateStr,
+        color: '#007a55'
+      });
+    } 
+    else if(depositForDay && depositForDay.status === 'pending'){
+        events.push({
+        id: `pending-${day}`,
+        title: `Pending - ${DAILY_AMOUNT} FRW`,
+        start: dateStr,
+        color: '#00d492'
+      });
+    }
+    else {
+      events.push({
+        id: `unpaid-${day}`,
+        title: `Unpaid - ${DAILY_AMOUNT} FRW`,
+        start: dateStr,
+        color: '#ec003f'
+      });
+    }
+  }
+
+  return events;
+};
+
+
+
+exports.skippedDays = async(req,res)=>{
+  try {
+     const {year, month} = req.params
+     const data = await getSkippedDaysEvents(req.userId, year,month)
+     return res.json(data)
+  } catch (error) {
+    return res.status(404).json({message: error.message})
+  }
+}
+
+
+
+const getMonthlyApprovedSums = async (year, month) => {
+  const startDate = new Date(year, month - 1, 1);
+  const endDate = new Date(year, month, 0, 23, 59, 59, 999);
+
+  const result = await Deposit.aggregate([
+    {
+      $match: {
+        status: "approved",
+        depositedAt: { $gte: startDate, $lte: endDate }
+      }
+    },
+    {
+      $group: {
+        _id: "$depositedBy",
+        totalAmount: { $sum: "$amount" },
+        count: { $sum: 1 }
+      }
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "_id",
+        foreignField: "_id",
+        as: "user"
+      }
+    },
+    {
+      $unwind: "$user"
+    },
+    {
+      $project: {
+        _id: 0,
+        userId: "$user._id",
+        name: "$user.name", 
+        email: "$user.email", 
+        phone: "$user.phone", 
+        idno: "$user.idno", 
+        totalAmount: 1,
+        count: 1
+      }
+    }
+  ]);
+
+  return result;
+};
+
+
+exports.monthlySavings = async(req,res)=>{
+  try {
+    const{year,month} = req.query
+    const sums = await getMonthlyApprovedSums(year,month)
+    return res.json(sums)
+    
+  } catch (error) {
+    return res.status(405).json({message: error.message})
+  }
+}

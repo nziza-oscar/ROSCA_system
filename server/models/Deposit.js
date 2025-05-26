@@ -11,7 +11,10 @@ const depositSchema = new mongoose.Schema({
     type: String,
     default: "FRW"
   },
-  proof: String,
+  proof: {
+    url:String,
+    public_id:String
+  },
   depositedBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User"
