@@ -237,7 +237,7 @@ tbody{
   @apply bg-white divide-y divide-gray-200;
 }
 td{
-  @apply px-6 py-4 whitespace-nowrap;
+  @apply px-6 py-4 whitespace-nowrap text-sm;
 }
 .modal{
   @apply fixed z-72 inset-0 overflow-y-auto bg-black/30   w-full h-screen flex justify-center items-center;
@@ -259,7 +259,7 @@ td{
 }
 
 .label{
-  @apply text-gray-600 text-sm font-semibold block pb-1;
+  @apply text-gray-600 text-sm font-semibold block py-2;
 }
 .input{
   @apply w-full border px-2 placeholder:text-sm py-[7px] border-gray-300  rounded focus:outline-blue-500 resize-none;

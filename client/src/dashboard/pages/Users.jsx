@@ -2,19 +2,10 @@
 
 import { useState } from "react"
 import {
-  BarChart3,
-  ShoppingCart,
-  Package,
-  Users,
-  Settings,
-  Search,
-  Bell,
+ 
   ChevronDown,
   Edit,
-  Menu,
-  X,
   ArrowUpDown,
-  Filter,
   MoreHorizontal,
   UserPlus,
   Lock,
@@ -26,7 +17,6 @@ import {
   XCircle,
   Save,
   EyeIcon,
-  Edit2,
   EditIcon,
 } from "lucide-react"
 
@@ -39,7 +29,6 @@ export default function UserManagement() {
  
   const { users } = useSelector((state)=>state.auth)
   const dispatch = useDispatch()
-  const [sidebarOpen, setSidebarOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
   const [filterRole, setFilterRole] = useState("all")
   const [filterStatus, setFilterStatus] = useState("all")
@@ -62,27 +51,23 @@ export default function UserManagement() {
       name:'',
       email:'',
       role:'',
-      department:'',
-      phonenumber:'',
-      status:'',
+      idno:'',
+      phone:'',
       password:''
 
     },
-    onSubmit:(values)=>{
+    onSubmit:(values,{resetForm})=>{
         dispatch(createUser(values))
+        resetForm()
 
     },
-
     validationSchema:YUP.object({
       name:YUP.string().required("User fullname required*"),
       email:YUP.string().required("Email is required").email("Invalid Email"),
-      role:YUP.string().required("Role is required").oneOf(["manager","admin","cashier",'inventory','manager']),
-      department:YUP.string().required("Department is required"),
-
-      phonenumber:YUP.string().required("Phonenumber is required").min(10,"Phonenumber has to be 10 digit").max(13,"Phonenumber can not execeed 13 digits"),
-      status:YUP.string().required("Status is required").oneOf(["ACTIVE","INACTIVE"]),
+      role:YUP.string().required("Role is required").oneOf(["admin","user"]),
+      idno:YUP.string().required("ID number is required"),
+      phone:YUP.string().required("Phonenumber is required").min(10,"Phonenumber has to be 10 digit").max(13,"Phonenumber can not execeed 13 digits"),
       password:YUP.string().required("Password is required").min(5,"At least 5 characters long").max(8,"Do not exceed 8 characters")
-    
     })
 
   })
@@ -174,13 +159,7 @@ export default function UserManagement() {
         </div>
         <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
           <div className="flex items-center space-x-2">
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className="inline-flex items-center justify-center rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:w-auto"
-            >
-              <Filter className="h-4 w-4 mr-1" />
-              Filters
-            </button>
+            
             <button
               onClick={() => {
                 setSelectedUser(null)
@@ -195,58 +174,7 @@ export default function UserManagement() {
         </div>
       </div>
 
-      {/* Filters */}
-      {showFilters && (
-        <div className="mt-4 bg-white shadow rounded-lg p-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label htmlFor="role-filter" className="block text-sm font-medium text-gray-700 mb-1">
-                Role
-              </label>
-              <select
-                id="role-filter"
-                value={filterRole}
-                onChange={(e) => setFilterRole(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              >
-                {roles.map((role) => (
-                  <option key={role.id} value={role.id}>
-                    {role.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label htmlFor="status-filter" className="block text-sm font-medium text-gray-700 mb-1">
-                Status
-              </label>
-              <select
-                id="status-filter"
-                value={filterStatus}
-                onChange={(e) => setFilterStatus(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              >
-                <option value="all">All Statuses</option>
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-              </select>
-            </div>
-            <div className="flex items-end">
-              <button
-                onClick={() => {
-                  setFilterRole("all")
-                  setFilterStatus("all")
-                  setSearchTerm("")
-                }}
-                className="px-4 py-2 text-sm text-gray-600 hover:text-gray-900"
-              >
-                Clear Filters
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
+      
       {/* Users Table */}
       <div className="mt-6 bg-white shadow overflow-hidden rounded-lg">
         <div className="overflow-x-auto">
@@ -284,16 +212,7 @@ export default function UserManagement() {
                     {sortBy === "role" && <ArrowUpDown className="ml-1 h-4 w-4 text-gray-400" />}
                   </div>
                 </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                  onClick={() => handleSort("status")}
-                >
-                  <div className="flex items-center">
-                    Status
-                    {sortBy === "status" && <ArrowUpDown className="ml-1 h-4 w-4 text-gray-400" />}
-                  </div>
-                </th>
+                
                 <th
                   scope="col"
                   className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
@@ -305,32 +224,60 @@ export default function UserManagement() {
                   </div>
                   
                 </th>
+
+                  <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                  onClick={() => handleSort("lastLogin")}
+                >
+                  <div className="flex items-center">
+                   ID Number
+                    {sortBy === "lastLogin" && <ArrowUpDown className="ml-1 h-4 w-4 text-gray-400" />}
+                  </div>
+                  
+                </th>
+              
+
+                 <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                  onClick={() => handleSort("savings")}
+                >
+                  <div className="flex items-center">
+                    Positions
+                    {sortBy === "savings" && <ArrowUpDown className="ml-1 h-4 w-4 text-gray-400" />}
+                  </div> 
+                </th>
+
                 <th
                   scope="col"
                   className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
                   onClick={() => handleSort("savings")}
                 >
                   <div className="flex items-center">
-                    Savings
+                    Payment Perday
                     {sortBy === "savings" && <ArrowUpDown className="ml-1 h-4 w-4 text-gray-400" />}
                   </div> 
                 </th>
 
 
                 <th scope="col" className="relative px-6 py-3">
-                  <span className="sr-only">Actions</span>
+                  <span>Actions</span>
                 </th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {filteredUsers.map((user) => (
+              {filteredUsers.map((user,index) => (
                 <tr
                   key={user._id}
                   className="hover:bg-gray-50 cursor-pointer"
                   onClick={() => openUserDetails(user)}
                 >
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
+                    {index+1}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
                       <div className="flex-shrink-0 h-10 w-10">
                         <img
                           className="h-10 w-10 rounded-full"
@@ -340,41 +287,31 @@ export default function UserManagement() {
                       </div>
                       <div className="ml-4">
                         <div className="text-sm font-medium text-gray-900">{user.name}</div>
-                        <div className="text-xs text-gray-500">{user.email}</div>
+                        <div className="text-xs text-gray-500" translate="no">{user.email}</div>
                       </div>
                     </div>
                   </td>
+
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span
+                     <span
                       className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getRoleBadgeClass(
                         user.role,
                       )}`}
                     >
-                      {user.role === "admin"
-                        ? "Administrator"
+                      {user.role === "user"
+                        ? "System User"
                         : user.role === "manager"
                           ? "Manager"
                           : user.role === "cashier"
                             ? "Cashier"
-                            : "Inventory Specialist"}
+                            : "Unknown"}
                     </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span
-                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusBadgeClass(
-                        user.status,
-                      )}`}
-                    >
-                      {user.status === "active" ? (
-                        <CheckCircle className="h-3 w-3 mr-1" />
-                      ) : (
-                        <XCircle className="h-3 w-3 mr-1" />
-                      )}
-                      {user?.status?.charAt(0)?.toUpperCase() + user?.status?.slice(1)}
-                     
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.phone}</td>
+                    </td>
+                 
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.phone || "-"}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.idno || "-"}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.position || "-"}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500" translate="no">{(user.position*1000).toLocaleString()}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <div className="flex items-center justify-end space-x-2">
                       <button
@@ -495,6 +432,20 @@ export default function UserManagement() {
                         }
                       </div>
 
+                          <div className="col-span-2">
+                        <label className="block text-sm  text-gray-700 mb-1">ID Number: </label>
+                        <input
+                          type="number"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md
+                           focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm"
+                          placeholder="Enter ID number....."
+                          {...formik.getFieldProps('idno')}
+                        />
+                         {
+                          formik.errors.idno && formik.touched.idno && <div className="text-xs text-red-600 pt-2">*{formik.errors.idno}</div>
+                        }
+                      </div>
+
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
                         <select className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none
@@ -517,10 +468,10 @@ export default function UserManagement() {
                           type="tel"
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                           placeholder="Enter phone number"
-                          {...formik.getFieldProps('phonenumber')}
+                          {...formik.getFieldProps('phone')}
                         />
                          {
-                          formik.errors.phonenumber && formik.touched.phonenumber && <div className="text-xs text-red-600 pt-2">*{formik.errors.phonenumber}</div>
+                          formik.errors.phone && formik.touched.phone && <div className="text-xs text-red-600 pt-2">*{formik.errors.phone}</div>
                         }
                       </div>
 

@@ -6,16 +6,15 @@ import Unauthorized from '../dashboard/components/Unauthorized'
 const ProtectedRoutes = () => {
   const isAuthenticated = !!sessionStorage.getItem('nihemart_token') 
 
-  return <Layout/>
-  return isAuthenticated ? <Layout/> : <Navigate to="login" />
+
+  return isAuthenticated ? <Layout/> : <Navigate to="/login" />
 }
 
 
 export const ProtectedPage = ({children})=>{
  const isAuthenticated = !!sessionStorage.getItem('nihemart_token') 
 
- return <>{children}</>
- return isAuthenticated ? <>{children}</> : <Unauthorized/>
+ return isAuthenticated  ? <>{children}</> : <Unauthorized/>
   
 }
 export default ProtectedRoutes

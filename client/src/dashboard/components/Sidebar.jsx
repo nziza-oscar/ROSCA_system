@@ -1,26 +1,54 @@
-"use client"
 
-import { Home, Users, DollarSign, BarChart2, MessageSquare, Settings, LogOut, Book, Weight } from "lucide-react"
-import { useState } from "react"
+import { Book, BookMarked, Briefcase, Calendar, Home, Users, Weight } from "lucide-react"
+import { useState, useRef, useEffect} from "react"
 import { NavLink } from "react-router-dom"
 import logo from "../../assets/logo.png"
+import {useSelector} from "react-redux"
+
 export default function Sidebar() {
   const [activeItem, setActiveItem] = useState("Dashboard")
-
+ const {user} = useSelector((state)=>state.auth)
   const menuItems = [
     { name: "Dashboard", icon: Home , to:"/dashboard/home"},
-    { name: "Debtors", icon: DollarSign, to:"/dashboard/debtors" },
-    { name: "Users", icon: Users, to:"/dashboard/users" },
     { name: "Balance", icon: Weight, to:"/dashboard/balance" },
-    { name: "payers", icon: Book, to:"/dashboard/transaction" },
-    { name: "Reports", icon: BarChart2, to:"/dashboard/reports" },
-    { name: "Feedbacks", icon: MessageSquare, to:"/dashboard/feedbacks" },
-    { name: "Settings", icon: Settings, to:"/dashboard/settings" },
-    { name: "Logout", icon: LogOut, to:"" },
+    { name: "Debts", icon: Calendar , to:"/dashboard/debts" }
   ]
 
+   const adminItems = [
+    { name: "Dashboard", icon: Home , to:"/dashboard/home"},
+    { name: "Users", icon: Users , to:"/dashboard/users"},
+    { name: "Savings", icon: Book , to:"/dashboard/savings"},
+    { name: "Deposit Request", icon: Briefcase , to:"/dashboard/savings"},
+    { name: "Historique", icon:BookMarked , to:"/dashboard/historic"},
+   
+  ]
+
+  const googleTranslateRef = useRef(null)
+  useEffect(()=>{
+        let intervalId;
+              const googleTranslateElementInit = () => {
+                  if(window.google && window.google.translate){
+                    clearInterval(intervalId);
+  
+                    new window.google.translate.TranslateElement(
+                    {
+                      pageLanguage: "en",
+                      autoDisplay: false,
+                      layout:window.google.translate.TranslateElement.FloatPosition.TOP_LEFT
+                    },
+                    googleTranslateRef.current
+                  );
+              
+                   
+                  }
+                }; 
+  
+      intervalId = setInterval(googleTranslateElementInit,100)
+     
+  },[])
+
   return (
-    <div className="h-screen w-60 bg-navy-900 text-white flex flex-col">
+    <div className="h-screen w-60 bg-navy-900 text-white flex flex-col fixed">
       {/* Logo */}
       <div className="flex items-center p-4">
         <div className="bg-blue-600 rounded-full h-14 w-14 flex items-center justify-center mr-3">
@@ -35,7 +63,7 @@ export default function Sidebar() {
       {/* Navigation */}
       <nav className="mt-8 flex-1">
         <ul>
-          {menuItems.map((item) => {
+          {user && user.role === "user" && menuItems.map((item) => {
             const Icon = item.icon
             const isActive = activeItem === item.name
 
@@ -62,6 +90,39 @@ export default function Sidebar() {
               </li>
             )
           })}
+
+           {user && user.role === "admin" && adminItems.map((item) => {
+            const Icon = item.icon
+            const isActive = activeItem === item.name
+
+            return (
+              <li key={item.name} className="mb-1">
+                <NavLink
+                  to={item.to}
+                  
+                  className="flex items-center w-full px-4 py-3 text-left text-gray-300 hover:bg-navy-800"
+                >
+                  <Icon size={16} className="mr-3" />
+                  <span>{item.name}</span>
+                  {isActive && (
+                    <span className="ml-auto">
+                      <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                          d="M0 4C0 1.79086 1.79086 0 4 0C6.20914 0 8 1.79086 8 4C8 6.20914 6.20914 8 4 8C1.79086 8 0 6.20914 0 4Z"
+                          fill="white"
+                        />
+                      </svg>
+                    </span>
+                  )}
+                </NavLink>
+              </li>
+            )
+          })}
+
+          <li className="px-2">
+            <div id="google_translate_element" className="block lg:hidden" ref={googleTranslateRef}></div>
+
+          </li>
         </ul>
       </nav>
     </div>

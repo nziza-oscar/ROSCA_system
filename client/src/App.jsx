@@ -19,8 +19,11 @@ const Delaying = ({children})=> <Suspense fallback={<Loader/>}>{children}</Suspe
 import ProtectedRoutes from "./lib/ProtectedRoutes"
 import {ProtectedPage} from "./lib/ProtectedRoutes"
 const Debtors =  lazy(()=> import("./dashboard/pages/Debtors")) 
+const Debts =  lazy(()=> import("./dashboard/pages/Debts")) 
 const Reports = lazy(()=>import("./dashboard/pages/Reports"))
 const Balance = lazy(()=>import("./dashboard/pages/Balance"))
+const RegisterPage = lazy(()=>import("./pages/RegisterPage"))
+const Savings = lazy(()=>import("./dashboard/pages/Savings"))
 
 // ___________end dashboard___________
 const router = createBrowserRouter(
@@ -32,9 +35,13 @@ const router = createBrowserRouter(
         <Route path="home" element={<Delaying><Dashboard/></Delaying>}/>
         <Route path="users" element={<Delaying><Users/></Delaying>}/>
         <Route path="debtors" element={<Delaying><Debtors/></Delaying>}/>
+        <Route path="debts" element={<Delaying><Debts/></Delaying>}/>
+        
         <Route path="reports" element={<Delaying><Reports/></Delaying>}/>
         <Route path="settings" element={<Settings />} />
         <Route path="balance" element={<Delaying><Balance/></Delaying>} />
+        <Route path="savings" element={<Delaying><Savings/></Delaying>} />
+
         <Route path="*" element={<NotFoundPage />} />
       </Route>
 
@@ -42,10 +49,10 @@ const router = createBrowserRouter(
       <Route path="/" element={<Layout />}>
         <Route index element={<HomePage/>} />
         <Route path="login" element={<LoginPage />} />
+        <Route path="register" element={<RegisterPage />} />
         <Route path="terms" element={<Terms/>}/> 
         <Route path="faqs" element={<FaqsPage />} />
         <Route path="*" element={<NotFoundPage />} />
-
       </Route>
     </>
   )

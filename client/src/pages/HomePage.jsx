@@ -58,17 +58,23 @@ export default function HomePage() {
         <div className="container mx-auto">
           <h2 className="text-4xl font-bold text-blue-600 text-center mb-16">CONTACT US</h2>
           <div className="flex flex-col md:flex-row justify-center items-center space-y-6 md:space-y-0 md:space-x-16">
-            <div className="flex items-center">
-              <Mail className="text-gray-500 mr-3" size={24} />
-              <span className="text-gray-600">Steven34@gmai.com</span>
+            <div className="flex items-center text-sm">
+              <Mail className="text-gray-500 mr-3" size={26} />
+             <div className="block ">
+                <span className="text-gray-600 block text-xs">rutagengwaaugustin6422@gmai.com</span>
+                <span className="text-gray-600 block text-xs">stevenbyiringiro700@gmai.com</span>
+             </div>
             </div>
             <div className="flex items-center">
-              <Phone className="text-gray-500 mr-3" size={24} />
-              <span className="text-gray-600">+250 785 345 140</span>
+              <Phone className="text-gray-500 mr-3" size={16} />
+              <div className="block">
+                <span className="text-gray-600 text-xs block">+250 780 389 968</span>
+                <span className="text-gray-600 text-xs block">+250 784 176 888</span>
+              </div>
             </div>
             <div className="flex items-center">
-              <MessageCircle className="text-green-500 mr-3" size={24} />
-              <span className="text-gray-600">+250 785 140 170</span>
+              <MessageCircle className="text-green-500 mr-3" size={16} />
+              <span className="text-gray-600">+250 780 389 968</span>
             </div>
           </div>
         </div>

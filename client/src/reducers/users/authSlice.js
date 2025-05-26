@@ -10,15 +10,9 @@ const handleAuthSuccess = (state, action) => {
   state.token = action.payload.data.token;
   sessionStorage.setItem('nihemart_token', action.payload.data.token);
   state.error = null;
-  if(data.role === "admin"){
-    window.location.href="/dashboard"
-    
-  }
-  else{
-    window.location.href="/"
-  }
-  // console.log(data)
-  return
+  
+  window.location.href="/dashboard"
+  
 };
 
 const handleAuthFailure = (state, action) => {
@@ -43,7 +37,7 @@ const authSlice = createSlice({
         state.user = null;
         state.token = null;
         sessionStorage.removeItem('nihemart_token');
-        window.location.reload()
+        window.location.href="/"
       },
       clearSuccessError(state){
         state.error = null;
@@ -64,8 +58,16 @@ const authSlice = createSlice({
         })
         .addCase(signUp.fulfilled,handleAuthSuccess)
         .addCase(signUp.rejected,handleAuthFailure)
+        .addCase(fetchMyData.pending, (state)=>{
+          state.loading = true
+        })
         .addCase(fetchMyData.fulfilled,(state,action)=>{
           state.user = action.payload.data
+          state.loading = false
+        })
+        .addCase(fetchMyData.rejected, (state,action)=>{
+          state.loading = false
+          state.error = action.payload.message
         })
         .addCase(createUser.fulfilled,(state,action)=>{
            state.users.push(action.payload.data)

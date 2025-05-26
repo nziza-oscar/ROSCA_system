@@ -9,7 +9,7 @@ import { search, useSearch,sort, filter } from "use-search-react"
 import DeleteModal from '../components/DeleteModal'
 import { clearSuccessError } from '../../reducers/dashboard/DepositSlice'
 
-const Balance = () => {
+const Savings = () => {
   const {user} = useSelector((state)=>state.auth)
   const {data,loading,error,success,stats} = useSelector((state)=>state.deposit)
   const photoInput = useRef(null)
@@ -121,7 +121,7 @@ useEffect(()=>{
   return (
     <div>
     {
-      user && <div className="banner flex py-5 bg-navy-900 px-5 text-gray-100 rounded flex  justify-between items-center z-10 ">
+      user && user.role == "user" && <div className="banner flex py-5 bg-navy-900 px-5 text-gray-100 rounded flex  justify-between items-center z-10 ">
          <div>
            <h4>Amount Balance</h4>
           <h3 className='text-2xl text-gray-400 font-bold'>{stats?.approvedAmount?.toLocaleString()} FRW</h3>
@@ -130,7 +130,16 @@ useEffect(()=>{
       </div>
     }
 
-  
+   {
+      user && user.role == "admin" && <div className="banner flex py-5 bg-navy-900 px-5 text-gray-100 rounded flex  justify-between items-center z-10 ">
+         <div>
+           <h4>Amount Balance</h4>
+          <h3 className='text-2xl text-gray-400 font-bold'>{stats?.approvedAmount?.toLocaleString()} FRW</h3>
+         </div>
+         { !(["admin"].includes(user.role)) && allowed &&  <div><button className='btn bg-purple-500 relative' onClick={handleModal}>Deposit</button></div> }
+      </div>
+    }
+
   <div className={`${showModal?`modal`:`hidden`}`}>
       <div className="modal-content modal-sm">
           <div className="modal-header">
@@ -222,8 +231,9 @@ useEffect(()=>{
               <thead>
                 <tr>
                   <th>#</th>
-                  {/* <th>Transaction Id</th> */}
-                { (["admin"].includes(user.role)) &&  <><th>Names</th><th>Email</th><th>Phone</th></> }
+                  <th>Names</th>
+                  <th>Email</th>
+                  <th>Phone</th>
                   <th>Amount</th>
                   <th>Date</th>
                   <th>Status</th>
@@ -237,7 +247,8 @@ useEffect(()=>{
                     <tr key={index}>
 
                       <td>{index+1}</td>
-                      {/* <td><small translate="no">{deposit.transactionId}</small></td> */}
+                      <td><div  translate="no">{deposit?.depositedBy?.name}</div></td>
+                      <td><div  translate="no">{deposit?.depositedBy?.email}</div></td>
                       <td>{deposit.amount.toLocaleString()} {deposit.currency}</td>
                       <td>{new Date(deposit.depositedAt).toDateString()}</td>
                       <td>{deposit.status}</td>
@@ -270,4 +281,4 @@ useEffect(()=>{
   )
 }
 
-export default Balance
+export default Savings
