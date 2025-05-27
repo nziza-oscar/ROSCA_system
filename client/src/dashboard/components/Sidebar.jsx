@@ -1,5 +1,5 @@
 
-import { Book, BookMarked, Briefcase, Calendar, Home, Users, Weight } from "lucide-react"
+import { Book, BookMarked, Briefcase, Calendar, Home, University, Users, Weight } from "lucide-react"
 import { useState, useRef, useEffect} from "react"
 import { NavLink } from "react-router-dom"
 import logo from "../../assets/logo.png"
@@ -16,8 +16,9 @@ export default function Sidebar() {
 
    const adminItems = [
     { name: "Dashboard", icon: Home , to:"/dashboard/home"},
-    { name: "Users", icon: Users , to:"/dashboard/users"},
     { name: "Savings", icon: Book , to:"/dashboard/savings"},
+    { name: "withdrawal", icon: University , to:"/dashboard/withdrawal"},
+    { name: "Users", icon: Users , to:"/dashboard/users"},
     { name: "Deposit Request", icon: Briefcase , to:"/dashboard/deposit-request"},
     { name: "Historique", icon:BookMarked , to:"/dashboard/historic"},
    
@@ -61,8 +62,11 @@ export default function Sidebar() {
       </div>
 
       {/* Navigation */}
-      <nav className="mt-8 flex-1">
+      <nav className="mt-1 flex-1">
         <ul>
+          {user && user.role == "admin" && <li className="px-4 py-3 ">
+            <h2 className=" font-bold text-xl" style={{color:"#fff"}}>ADMIN</h2>
+          </li>}
           {user && user.role === "user" && menuItems.map((item) => {
             const Icon = item.icon
             const isActive = activeItem === item.name

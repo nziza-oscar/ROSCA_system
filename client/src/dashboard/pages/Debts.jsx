@@ -33,19 +33,36 @@ const Debts = () => {
     setIsOpen(false);
   };
 
+  const handleEventClick = (arg) => {
+    const { start, title } = arg.event;
+    const amount = title.split(" - ")[1] 
+    const [debt,currency] = amount.split(" ")
+   
+    setFormData({
+      date: start.toISOString().split('T')[0],
+      amount: debt,
+      proof: '',
+      title
+    });
+
+    setIsOpen(true);
+  };
+
+
   return (
     <div className="p-4">
       <FullCalendar
         plugins={[dayGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
         events={debtsEvents}
-        dateClick={handleDateClick}
+        eventClick={handleEventClick}
+        
       />
 
       {isOpen && (
         <div className="fixed inset-0 bg-black/40 bg-opacity-40 flex justify-center items-center z-72">
           <div className="bg-white rounded-lg shadow-md p-6 w-full max-w-md">
-            <h2 className="text-xl font-bold mb-4 uppercase">Add Deposit</h2>
+            <h2 className="text-xl font-bold mb-4 uppercase">Pay Debt</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
@@ -65,13 +82,13 @@ const Debts = () => {
                   value={formData.amount}
                   onChange={handleChange}
                   readOnly
-                  className="w-full border border-gray-300 rounded px-3 py-2"
+                  className="w-full border border-gray-300 rounded px-3 py-2 bg-gray-100 text-gray-600"
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Proof</label>
                 <input
-                  type="text"
+                  type="file"
                   name="proof"
                   value={formData.proof}
                   onChange={handleChange}
@@ -83,7 +100,7 @@ const Debts = () => {
                 <button
                   type="button"
                   onClick={() => setIsOpen(false)}
-                  className="btn px-4 py-2 bg-red-600 text-gray-700 rounded hover:bg-gray-300"
+                  className="btn px-4 py-2 bg-red-600 text-gray-700 rounded "
                 >
                   Cancel
                 </button>

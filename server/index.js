@@ -20,7 +20,7 @@ mongoose.connect("mongodb://localhost:27017/ROSCA", {
 const userRoutes = require('./routes/userRoutes');
 const authRoutes = require('./routes/authRoutes');
 const depositRoutes = require("./routes/depositRoutes")
-
+const withdrawalRoutes = require("./routes/withdrawalRoutes")
 // Use Routes
 
 app.use("/api/home",(req,res)=>{
@@ -29,6 +29,8 @@ app.use("/api/home",(req,res)=>{
 app.use('/api/users', userRoutes);
 app.use('/api/auth', authRoutes);
 app.use("/api/deposit", depositRoutes)
+app.use("/api/withdrawals", withdrawalRoutes)
+
 app.use((req,res,next)=>{
    
   return res.status(404).json({message: "404: ROUTE NOT FOUND"})

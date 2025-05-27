@@ -1,16 +1,15 @@
 
 
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import TableSection from '../components/TableSection'
 import { useDispatch, useSelector } from 'react-redux'
 import { Edit, Search, Trash2, X } from 'lucide-react'
-import {Form, Formik, FormikProvider, useFormik} from "formik"
+import {Form, FormikProvider, useFormik} from "formik"
 import * as YUP from  "yup"
-import { createDeposit, deleteDeposit } from '../../actions/dashboard'
 import { search, useSearch,sort, filter } from "use-search-react"
 import DeleteModal from '../components/DeleteModal'
 import { clearSuccessError } from '../../reducers/dashboard/DepositSlice'
-import { getPendingDeposits } from '../../API/dashboardApi'
+import { approveDeposit, getPendingDeposits } from '../../API/dashboardApi'
 import Loader from '../../lib/Loader'
 
 const DepositRequest = () => {
@@ -118,9 +117,15 @@ useEffect(()=>{
          }
       }
 
-const handleApprove = (data)=>{
-    setDeposit(data)
-    setRejectModal(true)
+const handleApprove = async(deposit)=>{
+    try {
+       const {data} = await approveDeposit(deposit)
+       console.log(data)
+    } catch (error) {
+       console.log(error)
+    }
+    
+   
 }
 
 const handleSubmit = (e)=>{

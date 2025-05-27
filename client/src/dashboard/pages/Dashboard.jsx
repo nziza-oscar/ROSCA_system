@@ -11,7 +11,7 @@ import { useSelector } from "react-redux"
 
 export default function Dashboard() {
 
-const {user,loading} = useSelector((state)=>state.auth)
+const {user,users,loading} = useSelector((state)=>state.auth)
 const {data,stats} = useSelector(state=>state.deposit)
 const [haveDebt,setHaveDebt] = useState(false)
 
@@ -39,9 +39,9 @@ useEffect(() => {
           {/* Stats Section */}
           {
             user.role == "admin" &&  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-            <StatCard title="System Users" value="15" color="blue" />
+            <StatCard title="System Users" value={users.length} color="blue" />
             <StatCard title="borrowers" value="5" color="purple" />
-            <StatCard title="Money SAVINGS" value="120,000frw" color="red" />
+            <StatCard title="Money SAVINGS" value={`${stats?.approvedAmount?.toLocaleString()} FRW`} color="red" />
           </div>
           }
 

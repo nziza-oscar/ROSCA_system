@@ -7,7 +7,7 @@ import { Outlet, useNavigate } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
 import { fetchMyData, fetchUsers } from "../../actions/users"
 import { logout } from "../../reducers/users/authSlice"
-import { fetchDeposits, skippedDeposit } from "../../actions/dashboard"
+import { fetchDeposits, getAllUserBalances, skippedDeposit } from "../../actions/dashboard"
 
 export default function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(true)
@@ -24,8 +24,10 @@ export default function Layout() {
     const dates = new Date();
     const yyyyMmDd = dates.toISOString().split('T')[0];
     const [year,month,day] = yyyyMmDd.split("-")
-     dispatch(fetchMyData())
-    dispatch(fetchDeposits())
+    const startDate = new Date(year, month - 1, 1);
+    const endDate = new Date(year, month, 0, 23, 59, 59, 999);
+    dispatch(fetchMyData())
+    dispatch(fetchDeposits({startDate: startDate.toISOString().split("T")[0] ,endDate: endDate.toISOString().split("T")[0]}))
     dispatch(skippedDeposit({year,month,day}))
     dispatch(fetchUsers())
   },[])
@@ -35,6 +37,13 @@ export default function Layout() {
     navigate("/")
   }
 
+   useEffect(()=>{
+        if(user){
+           if(user.role == "admin"){
+            dispatch(getAllUserBalances())
+           }
+        }
+   },[user])
   
   return (
     <div className="min-h-screen bg-gray-100">

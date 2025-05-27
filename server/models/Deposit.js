@@ -42,7 +42,7 @@ const depositSchema = new mongoose.Schema({
   confirmedAt: {
     type: Date
   }
-});
+},{timestamps:true});
 
 depositSchema.pre("save", function (next) {
   if (!this.transactionId) {

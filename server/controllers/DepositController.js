@@ -1,6 +1,7 @@
 const Deposit = require("../models/deposit");
 const {uploadToCloudinary,deleteFromCloudinary} = require("./cloudinaryService")
 const mongoose = require("mongoose")
+const User = require("../models/User")
 exports.createDeposit = async (req, res) => {
   try {
     const {amount} = req.body
@@ -21,16 +22,28 @@ exports.createDeposit = async (req, res) => {
 exports.getAllDeposits = async (req, res) => {
   try {
     let filter = {};
+     const {startDate,endDate,all} = req.query
+      
 
     if (req.userRole !== 'admin') {
       filter.depositedBy = req.userId;
-      
     }
+   if(startDate != "undefined" && endDate!="undefined"){
+     const start = new Date(startDate);
+     const end = new Date(endDate);
+     end.setHours(23, 59, 59, 999); 
+     filter.depositedAt= {
+          $gte: start,
+          $lte: end
+        }
+  
+   }
+
 
     const userId = req.userId;
     const condition = userId&& req.userRole=="user" ? {depositedBy: new mongoose.Types.ObjectId(userId) } : {}
     const result = await Deposit.aggregate([
-      { $match: condition },
+      { $match: filter },
       {
         $group: {
           _id: null,
@@ -265,8 +278,8 @@ const getSkippedDays = async (userId, year, month) => {
 // };
 
 
-const getSkippedDaysEvents = async (userId, year, month) => {
-  const DAILY_AMOUNT = 2000;
+const getSkippedDaysEvents = async (userId, year, month,DAILY_AMOUNT) => {
+
 
   const start = new Date(year, month - 1, 1);
   const end = new Date(year, month, 0, 23, 59, 59, 999);
@@ -282,7 +295,7 @@ const getSkippedDaysEvents = async (userId, year, month) => {
   for (let day = 1; day <= totalDays; day++) {
     const currentDate = new Date(year, month - 1, day);
     const dateStr = currentDate.toISOString().split('T')[0];
-
+     
     const depositForDay = deposits.find(d =>
       new Date(d.depositedAt).toISOString().split('T')[0] === dateStr
     );
@@ -317,11 +330,13 @@ const getSkippedDaysEvents = async (userId, year, month) => {
 };
 
 
-
 exports.skippedDays = async(req,res)=>{
   try {
      const {year, month} = req.params
-     const data = await getSkippedDaysEvents(req.userId, year,month)
+     const user = await User.findById(req.userId)
+     const DAILY_AMOUNT = user.position * 1000
+    
+     const data = await getSkippedDaysEvents(req.userId, year,month,DAILY_AMOUNT)
      return res.json(data)
   } catch (error) {
     return res.status(404).json({message: error.message})
@@ -414,4 +429,5 @@ exports.depositRequests = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
 

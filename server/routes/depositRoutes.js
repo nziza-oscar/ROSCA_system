@@ -11,7 +11,7 @@ router.get("/:id/get",isAuthorized, depositController.getDeposit);
 router.put("/:id/update", isAuthorized,depositController.updateDeposit);
 router.delete("/:id/delete", isAuthorized,depositController.deleteDeposit);
 router.get("/chart-data", isAuthorized,depositController.getDepositChartData);
-router.post("/:id/approve", isAuthorized,depositController.approveDeposit);
+router.put("/:id/approve", isAuthorized,depositController.approveDeposit);
 router.post("/:id/reject", isAuthorized,depositController.rejectDeposit);
 router.get("/stats", isAuthorized, depositController.getUserDepositStats)
 router.get("/calendar-skipped/:year/:month", isAuthorized, depositController.skippedDays)

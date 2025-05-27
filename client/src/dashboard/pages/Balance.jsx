@@ -19,6 +19,7 @@ const Balance = () => {
   const [order, setOrder] = useState("desc")
   const [statusFilter,setStatusFilter] = useState("all")
   const [allowed,setAllowed] = useState(false)
+  const [showMarque,setShowMarque] = useState(false)
   const results = useSearch(
     data,
     query,
@@ -70,8 +71,6 @@ const handleFilter = (val)=>{
 const [fieldName,value] = val.split("-")
     setField(fieldName)
     setOrder(value)
-    console.log(fieldName)
-
 }
 
 const [showDelete,setShowDelete] = useState(false)
@@ -108,7 +107,12 @@ useEffect(()=>{
 useEffect(()=>{
      const today = new Date().toDateString()
      if(data){
-        const toDayDeposit = data.find((data)=>new Date(data.depositedAt).toDateString() === today)
+        const toDayDeposit = data.find((data)=>new Date(data.depositedAt).toDateString() === today && data.status === "approved")
+        const doIhavePending = data.find((data)=>new Date(data.depositedAt).toDateString() === today && data.status === "approved")
+         
+        if(doIhavePending){
+          setShowMarque(true)
+        }
         if(toDayDeposit){
            setAllowed(false)
         }
@@ -131,7 +135,10 @@ useEffect(()=>{
     }
 
   
-  <marquee>Hello , <b>{user?.name}</b> You have a pending deposit request for today, please wait for admin to review and approve your deposit. Thanks!</marquee>
+  {
+    showMarque && <marquee>Hello , <b>{user?.name}</b> You have a pending deposit request for today, please wait for admin to review and approve your deposit. Thanks!</marquee>
+
+  }
   <div className={`${showModal?`modal`:`hidden`}`}>
       <div className="modal-content modal-sm">
           <div className="modal-header">
@@ -181,9 +188,9 @@ useEffect(()=>{
          </FormikProvider>
  
         <div className='py-2 flex gap-3 items-center'>
-          <h3 className='text-sm'>Payment Code: <b>*182*8*1*603403#</b></h3>
+          <h3 className='text-sm'>Phone Number: <b>*182*1*1*0780389968#</b></h3>
           <span className='text-gray-400'>|</span>
-          <h3 className='text-sm'>Names: <b>Steven</b></h3>
+          <h3 className='text-sm'>Names: <b>Rutagengwa Augustin</b></h3>
         </div>
         <marquee><b className='text-sm'>N.B: Remember to take phone screenshoot photo after paying</b>.</marquee>
       </div>

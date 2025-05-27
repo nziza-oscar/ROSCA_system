@@ -2,9 +2,9 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import * as API from "../../API/dashboardApi"
 
 export const  fetchDeposits = createAsyncThunk("Deposit/list",
-    async(_,thunkAPI)=>{
+    async(formData,thunkAPI)=>{
         try {
-            const {data} = await API.fetchDeposits()
+            const {data} = await API.fetchDeposits(formData?.startDate, formData?.endDate)
             return {status: "SUCCESS", data: data}
             
         } catch (error) {
@@ -92,6 +92,19 @@ export const  getPendingDeposits = createAsyncThunk("Deposit/pending",
             return thunkAPI.rejectWithValue({
                 status:"ERROR",
                 message: error.response?.data?.message || "Failed to "
+            })
+        }
+    }
+)
+export const  getAllUserBalances = createAsyncThunk("Withdrawals/all",
+    async(_,thunkAPI)=>{
+        try {
+            const {data} = await API.getAllUserBalances()
+            return {status: "SUCCESS", data: data}
+        } catch (error) {
+            return thunkAPI.rejectWithValue({
+                status:"ERROR",
+                message: error.response?.data?.message || "Failed to fetch getAllUserBalances "
             })
         }
     }

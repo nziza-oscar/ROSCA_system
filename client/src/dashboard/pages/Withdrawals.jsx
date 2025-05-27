@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import TableSection from '../components/TableSection'
 import { useDispatch, useSelector } from 'react-redux'
-import { BookA, Edit, Search, Trash2, X } from 'lucide-react'
+import { BookA, Edit, Eye, Search, Trash2, X } from 'lucide-react'
 import {Form, FormikProvider, useFormik} from "formik"
 import * as YUP from  "yup"
 import { createDeposit, deleteDeposit, fetchDeposits } from '../../actions/dashboard'
@@ -9,24 +9,28 @@ import { search, useSearch,sort, filter } from "use-search-react"
 import DeleteModal from '../components/DeleteModal'
 import { clearSuccessError } from '../../reducers/dashboard/DepositSlice'
 import ExportSavingsExcel from '../components/func/ExportSavingsExcel'
+import WithdrawalFormModal from '../components/WithdrawalModal'
+import { Link } from 'react-router-dom'
 
 const Savings = () => {
   const {user} = useSelector((state)=>state.auth)
   const {data,loading,error,success,stats} = useSelector((state)=>state.deposit)
   const photoInput = useRef(null)
+  const {usersBalance} = useSelector((state)=>state.withdrawals)
+ 
   const [showModal,setShowModal] = useState(false)
   const [query,setQuery] = useState('')
   const [field, setField] = useState("depositedAt")
   const [order, setOrder] = useState("desc")
   const [statusFilter,setStatusFilter] = useState("all")
-  const [imgSrc , setImageSrc] = useState(null)
+ const [withdrawal,setWithdrawal] = useState(null)
   const [dates,setDates] = useState({startDate:'', endDate:''})
   
   const results = useSearch(
-    data,
+    usersBalance,
     query,
     search({
-     fields:['name','amount','status','depositedAt',"depositedBy.name","depositedBy.email","depositedBy.phone"],
+     fields:['totalWithdrawals','balance','totalSavings','depositedAt',"user.name","user.email","user.phone"],
      matchType:"fuzzy" 
     }),
     sort({field:field,order:order}),
@@ -40,30 +44,13 @@ const Savings = () => {
 
   const dispatch = useDispatch()
 
-  const formik = useFormik({
-    initialValues:{
-      amount:user.position * 1000,
-      proof:null
-    },
-    onSubmit:(values)=>{
-        dispatch(createDeposit(values))
-       
-    },
-    validationSchema: YUP.object({
-      amount: YUP.number().required("Amount is required").min(1000, "Amafaranga ni make. shyiramo byibuze 1000FRW"),
-      proof:YUP.mixed().required("Proof is required").test("fileType",'Only JPG,JPEG,PNG files are allowed',(value)=>{
-            return value && ['image/jpeg','image/jpg','image/png'].includes(value.type)
-            }).test("fileSize", "file size must be less 5MB",(value)=>{
-              return value && value.size <=  5 * 1024 * 1024  
-            })
-    })
-  })
+  const [isOpen, setIsOpen] = useState(false);
 
 
+const handleFormSubmit = async (data) => {
+  
+};
 
-const handleModal = ()=>{
-  setShowModal((prev)=>!prev)
-}
 
 const handleShow = (val)=>{
     setStatusFilter(val)
@@ -73,35 +60,17 @@ const handleFilter = (val)=>{
 const [fieldName,value] = val.split("-")
     setField(fieldName)
     setOrder(value)
-
-
 }
 
-const [showDelete,setShowDelete] = useState(false)
-const [id, setId] = useState(null)
-const handleDelete = (ids)=>{
-   setShowDelete(true)
-   setId(ids)
-}
-const handleCancel = ()=>{
-  setId(null)
-  setShowDelete(false)
-}
-const handleConfirm = ()=>{
-  dispatch(deleteDeposit(id))
-  setId(null)
-  setShowDelete(false)
-}
-const handleEdit = (deposit)=>{
 
-}
+
 
 useEffect(()=>{
 
   if(success || error){
     const timeout =  setTimeout(()=>{
       dispatch(clearSuccessError())
-      formik.resetForm()
+    
     },4000)
     return ()=> clearTimeout(timeout)
   }
@@ -123,67 +92,31 @@ useState(()=>{
     const endDate = new Date(year, month, 0, 23, 59, 59, 999);
     setDates({startDate: startDate.toISOString().split("T")[0] ,endDate: endDate.toISOString().split("T")[0]})
 },[])
-const getStatusBadgeClass = (status) => {
-      switch (status) {
-        case "approved":
-          return "bg-green-200 text-xs text-green-800 px-1  rounded-full"
-        case "inactive":
-          return "bg-gray-100 text-gray-800"
-        default:
-          return "bg-gray-100 text-gray-800"
-      }
-    }
+
+
+const handleWithDrawal = (data)=>{
+    setIsOpen(true)
+    setWithdrawal(data)
+}
 
   return (
     <div>
     
-<div className={`${imgSrc ? "fixed":"hidden"} z-72 inset-0 overflow-y-auto bg-black/30   w-full h-screen flex justify-center items-center;`}>
 
-    <div className=' lg:w-1/2 bg-white '>
-        <div className='flex py-4 justify-between  px-4 border-b border-gray-300'>
-            <h3 className='uppercase font-bold'>Proof View</h3>
-            <button className='btn bg-red-500' onClick={()=>setImageSrc(null)}><X size={16}/></button>
-        </div>
-        <img src={imgSrc} className='w-full'/>
-    </div>
-</div>
 
-   {
-      user && user.role == "admin" && 
-      <div className="banner flex flex-col sm:flex-row gap-6 py-5 bg-navy-900 px-5 text-gray-100 rounded justify-between items-start lg:items-center z-10">
-         <div className='flex-1 w-full'>
-           <h4>Amount Balance</h4>
-          <h3 className='text-2xl text-gray-400 font-bold'>{stats?.approvedAmount?.toLocaleString()} FRW</h3>
-         </div>
-        <div className='flex-1 w-full'>
-            <form className='flex flex-col lg:flex-row gap-2 items-start lg:items-end' onSubmit={handleSubmit}>
-                <div className='flex-1 w-full'>
-                    <label htmlFor="" className='text-white block text-sm'>From Date: </label>
-                    <input type='date' value={dates.startDate}
-                     onChange={(e)=>setDates((prev)=>({...prev, startDate: e.target.value}))} 
-                     name='start' className='py-2 text-xs outnline-none bg-white text-gray-500 px-2 rounded outline-none w-full'/>
-                </div>
-                <div className='flex-1 w-full'>
-                    <label htmlFor="" className='text-white block text-sm'>End Date: </label>
-                    <input type='date' value={dates.endDate}
-                     onChange={(e)=>setDates((prev)=>({...prev, endDate: e.target.value}))} 
-                     name='end' className='py-2 text-xs outnline-none bg-white text-gray-500 px-2 rounded outline-none w-full'/>
-                </div>
-                <div>
-                    <button className='btn bg-green-500 px-2 py-1 rounded ' type='submit'
-                    >Send</button>
-                </div>
-            </form>
-         </div>
-      </div>
-    }
+  
+
+      <WithdrawalFormModal isOpen={isOpen} onClose={() => setIsOpen(false)} onSubmit={handleFormSubmit} user={withdrawal} />
+
 
       <div className="my-3">
         
           {success && <div className='success'>{success}</div>}
           {error && <div className='error'>{error}</div>}
         
-        <TableSection title="SAVINGS">
+
+    
+        <TableSection title="CLIENTS LIST ">
 
            
                   <div className="search flex flex-col lg:flex-row justify-between pb-4 gap-3">
@@ -222,12 +155,12 @@ const getStatusBadgeClass = (status) => {
                 <tr>
                   <th>#</th>
                   <th>Names</th>
-                  <th>Email</th>
                   <th>Phone</th>
-                  <th>Amount</th>
-                  <th>Date</th>
-                  <th>Status</th>
-                  <th>Proof</th>
+                  <th className='whitespace-nowrap'>Total Savings</th>
+                  <th className='whitespace-nowrap'>Amount withdrew</th>
+                  <th className='whitespace-nowrap'>Account Balance</th>
+                  <th className='whitespace-nowrap'>Action</th>
+                 
           
                 </tr>
               </thead>
@@ -236,25 +169,36 @@ const getStatusBadgeClass = (status) => {
                    results.length != 0 && results.map((deposit,index)=>(
                     <tr key={index}>
 
+                    
+                      
                       <td>{index+1}</td>
-                      <td><div  translate="no">{deposit?.depositedBy?.name}</div></td>
-                      <td><div  translate="no">{deposit?.depositedBy?.email}</div></td>
-                      <td><div  translate="no">{deposit?.depositedBy?.phone}</div></td>
-                      <td>{deposit.amount.toLocaleString()} {deposit.currency}</td>
-                      <td>{new Date(deposit.depositedAt).toDateString()}</td>
-                      <td><span className={`${getStatusBadgeClass(deposit.status)}`}>{deposit.status}</span></td>
+                      <td><div  translate="no" className='capitalize'>{deposit?.user?.name}</div></td>
+                      <td><div  translate="no">{deposit?.user?.phone}</div></td>
+                      <td><div  translate="no">{deposit?.totalSavings}</div></td>
+                      <td><div  translate="no">{deposit?.totalWithdrawals}</div></td>
+                      <td><div  translate="no">{deposit?.balance}</div></td>
                       <td>
-                        <div>
-                           <img src={deposit?.proof?.url}  className='cursor-pointer w-8 h-8' onClick={()=> setImageSrc(deposit?.proof?.url)}/>
+                        <div className="flex gap-2 ">
+                             <button onClick={() => handleWithDrawal(deposit)} 
+                         className="btn bg-blue-600 text-white px-4 py-2 rounded">withdrawal</button>
+                         <Link to={`/dashboard/transactions/${deposit?.user?.id}/details`} 
+                         className="btn bg-amber-500 text-white px-4 py-2 rounded"><Eye size={16}/></Link>
                         </div>
                       </td>
-                      
-                     
 
                     </tr>
                   ))
                 }
               </tbody>
+              <tfoot>
+                <tr>
+                    <th colSpan={3}>Total</th>
+                    <th>{results.reduce((acc,item)=> item.totalSavings + acc, 0)} FRW</th>
+                    <th>{results.reduce((acc,item)=> item.totalWithdrawals + acc, 0)} FRW</th>
+                    <th>{results.reduce((acc,item)=> item.balance + acc, 0)} FRW</th>
+                   
+                </tr>
+              </tfoot>
            </table>
         </TableSection>
       </div>
