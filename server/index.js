@@ -10,10 +10,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // MongoDB Connection
-// mongodb://localhost:27017/nihemart
-// mongodb+srv://onexengineer1:ghZPAVWqCWlV7OTW@cluster0.qpxeisi.mongodb.net/nihemart
-mongoose.connect("mongodb://localhost:27017/ROSCA", {
-
+mongoose.connect(process.env.DBURL, {
 }).then(() => console.log('MongoDB connected')).catch(err => console.log(err));
 
 // Import Routes
@@ -49,10 +46,7 @@ app.get('/api/test-email', async (req, res) => {
     }
   });
 
-  console.log(process.env.EMAIL_PORT)
-// Error Handling Middleware
 app.use((err, req, res, next) => {
-    console.error(err.stack);
     res.status(500).send({ message: 'Internal Server Error' });
 });
 
