@@ -34,3 +34,8 @@ export const getPendingDeposits= (startDate,endDate)=> API.get(`/deposit/request
 export const approveDeposit= (data)=> API.put(`/deposit/${data._id}/approve`)
 
 export const getAllUserBalances = ()=> API.get("/withdrawals/all")
+export const withdrawal = (FormData)=> API.post("/withdrawals/", FormData, {
+  headers:{
+    "Content-Type":"multipart/form-data"
+  }
+})

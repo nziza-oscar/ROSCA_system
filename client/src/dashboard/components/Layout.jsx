@@ -10,7 +10,9 @@ import { logout } from "../../reducers/users/authSlice"
 import { fetchDeposits, getAllUserBalances, skippedDeposit } from "../../actions/dashboard"
 
 export default function Layout() {
-  const [sidebarOpen, setSidebarOpen] = useState(true)
+   const [screenSize, setScreenSize] = useState("");
+   const [openSidebar, setOpenSidebar] = useState(true)
+
   const dispatch = useDispatch()
   const {user, loading} = useSelector((state)=>state.auth)
   const navigate = useNavigate()
@@ -44,26 +46,69 @@ export default function Layout() {
            }
         }
    },[user])
+
+    
+   const getSize = () => {
+     const width = window.innerWidth;
+     if (width < 640) {
+    
+       return "sm";
+     } else if (width < 768) {
+       return "md";
+     } else if (width < 1024) {
+       return "lg";
+     } else if (width < 1280) {
+       return "xl";
+     } else {
+       return "2xl";
+     }
+   };
+
+   useEffect(() => {
+     const handleResize = () => {
+       setScreenSize(getSize());
+     };
+ 
+     handleResize(); // set initial value
+     window.addEventListener("resize", handleResize);
+ 
+     return () => window.removeEventListener("resize", handleResize);
+   }, []);
+ 
+
+    useEffect(()=>{
+        if(screenSize == "sm" || screenSize == "md"){
+           setOpenSidebar(false)
+        }
+        else{
+          setOpenSidebar(true)
+        }
+    },[screenSize])
+
   
+   const LogoutUser = ()=>{
+     dispatch(logout())
+   }
+
+   const handleOpenSidebar = ()=>{
+    setOpenSidebar((prev)=>!prev)
+   }
+
+
   return (
-    <div className="min-h-screen bg-gray-100">
-      {/* Sidebar - hidden on mobile unless toggled */}
-      <div className={`${sidebarOpen ? "block" : "hidden"} md:block`}>
-        <Sidebar />
-      </div>
-
-      {/* Main Content */}
-      <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
-      { user && !loading &&  <div className="sticky top-0 z-60"><Header toggleSidebar={toggleSidebar} user={user}  logout={handleLogout}/></div>}
-
-        <main className="flex-1 overflow-none p-4">
-          <Outlet/>
-        </main>
-        <footer className="py-6 mt-auto">
-        <div className="container mx-auto text-center text-gray-500">
-          <p>All right is reserved by stev 2025</p>
-        </div>
-      </footer>
+    <div className="min-h-screen bg-gray-100 w-full">
+   
+         { openSidebar && <Sidebar   />}
+      <div className={ `${!openSidebar?"ml-0":"lg:ml-64"}  flex-1 flex flex-col `}>
+          <Header toggleSidebar={handleOpenSidebar} user={user} logout={LogoutUser} />
+          <main className="w-full  p-4 bg-gray-50 overflow-x-hidden relative">
+            <Outlet/>
+          </main>
+          <footer className="py-6 mt-auto">
+          <div className="container mx-auto text-center text-gray-500">
+            <p>All right is reserved by stev 2025</p>
+          </div>
+        </footer>
       </div>
     </div>
   )

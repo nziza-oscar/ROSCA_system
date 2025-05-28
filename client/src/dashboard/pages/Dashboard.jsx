@@ -29,8 +29,6 @@ useEffect(() => {
 }, [data]);
 
 
-
- 
   return (
 
       <div className="flex-1 flex flex-col overflow-hidden">
@@ -38,7 +36,7 @@ useEffect(() => {
         <main className="flex-1 overflow-y-auto p-4">
           {/* Stats Section */}
           {
-            user.role == "admin" &&  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+          user &&   user.role == "admin" &&  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             <StatCard title="System Users" value={users.length} color="blue" />
             <StatCard title="borrowers" value="5" color="purple" />
             <StatCard title="Money SAVINGS" value={`${stats?.approvedAmount?.toLocaleString()} FRW`} color="red" />
@@ -46,7 +44,7 @@ useEffect(() => {
           }
 
           {
-            user.role == "user" &&  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+           user && user.role == "user" &&  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
            
             <StatCard icon="SAVINGS" title="Money savings" value={`${stats?.approvedAmount?.toLocaleString()} FRW`} color="red" />
             {  haveDebt && <StatCard title="Borrowed" value="5" color="purple" /> }
@@ -56,7 +54,7 @@ useEffect(() => {
 
        
             {
-              user.role == "admin" &&    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6"> <TableSection title="Recent transactions">
+            user &&   user.role == "admin" &&    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6"> <TableSection title="Recent transactions">
               <TransactionsTable />
             </TableSection>
 

@@ -1,14 +1,10 @@
 import { X } from 'lucide-react';
 import { useState } from 'react';
 
-const WithdrawalFormModal = ({ isOpen, onClose, onSubmit,user }) => {
+const WithdrawalFormModal = ({loading, success,error, isOpen, onClose, onSubmit,user }) => {
   const [formData, setFormData] = useState({
-    name:'',
-    phone: user?.user?.phone,
     amount: '',
-    balance:user?.balance,
-    receiverId: user?.user?._id,
-    proofUrl: ''
+    proof: ''
   });
 
   const handleChange = (e) => {
@@ -19,22 +15,21 @@ const WithdrawalFormModal = ({ isOpen, onClose, onSubmit,user }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     onSubmit(formData);
-    setFormData({
+   if(success){
+     setFormData({
       amount: '',
-      receiverId: '',
-      proofUrl: '',
-      proofPublicId: '',
-      status: 'pending',
+      proof: ''
     });
     onClose();
+   }
   };
 
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-72 flex items-center justify-center bg-black/30 ">
-      <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-md relative">
-        <div className="flex justify-between items-center border-b pb-2 mb-2">
+      <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-md relative mx-2">
+        <div className="flex justify-between items-center border-b border-gray-400 pb-2 mb-2">
              <h2 className="text-xl font-semibold uppercase">withdrawal</h2>
             <button onClick={onClose} className="btn bg-red-500 self-center text-gray-500 hover:text-red-500">
                 <X size={14}/>
@@ -45,7 +40,12 @@ const WithdrawalFormModal = ({ isOpen, onClose, onSubmit,user }) => {
             user.balance == 0 ? <div className='bg-red-100 py-6 flex items-center justify-center font-bold'>
                 <h4>You have Insufficient Amount ({user.balance}FRW)</h4>
             </div>  : (
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-4" encType='multipart/form-data'>
+
+          {success && <div className='success text-xs'>{success}</div>}
+          {error && <div className='error text-xs'>{error}</div>}
+        
+
 
             <div className="flex gap-2">
                 <div className='w-full'>
@@ -91,9 +91,8 @@ const WithdrawalFormModal = ({ isOpen, onClose, onSubmit,user }) => {
             <label className="label">Proof URL</label>
             <input
               type="file"
-              name="proofUrl"
-              value={formData.proofUrl}
-              onChange={handleChange}
+              name="proof"
+              onChange={(e)=> setFormData({...formData, proof: e.currentTarget.files[0]})}
               className="input text-xs"
             />
           </div>
@@ -101,8 +100,8 @@ const WithdrawalFormModal = ({ isOpen, onClose, onSubmit,user }) => {
           
 
 
-          <button type="submit" className="btn w-full bg-green-600 text-white py-2 rounded hover:bg-green-700">
-            Withdrawal
+          <button disabled={loading} type="submit" className="btn w-full text-white py-2 rounded bg-navy-900">
+            {loading ? "Processing..":"Withdrawal"}
           </button>
         </form>
             )

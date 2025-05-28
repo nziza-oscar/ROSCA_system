@@ -21,11 +21,6 @@ const Header = () => {
           const googleTranslateElementInit = () => {
      if(window.google && window.google.translate){
       clearInterval(intervalId);
-      // window.google.TranslateElement({
-      //   pageLanguage:"en",
-      //   layout:window.google.translate.TranslateElement.InlineLayout.SIMPLE
-        
-      // }, googleTranslateRef.current)
 
       new window.google.translate.TranslateElement(
       {

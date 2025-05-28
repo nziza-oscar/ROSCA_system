@@ -49,7 +49,7 @@ export default function Sidebar() {
   },[])
 
   return (
-    <div className="h-screen w-60 bg-navy-900 text-white flex flex-col fixed">
+    <div className={`fixed w-64 bg-navy-900 text-white flex flex-col z-40 h-full`}>
       {/* Logo */}
       <div className="flex items-center p-4">
         <div className="bg-blue-600 rounded-full h-14 w-14 flex items-center justify-center mr-3">
@@ -124,7 +124,7 @@ export default function Sidebar() {
           })}
 
           <li className="px-2">
-            <div id="google_translate_element" className="block lg:hidden" ref={googleTranslateRef}></div>
+            <div id="google_translate_element" style={{display:"none"}} ref={googleTranslateRef}></div>
 
           </li>
         </ul>

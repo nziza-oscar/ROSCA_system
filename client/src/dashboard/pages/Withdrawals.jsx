@@ -1,12 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react'
+import  { useEffect,  useState } from 'react'
 import TableSection from '../components/TableSection'
 import { useDispatch, useSelector } from 'react-redux'
-import { BookA, Edit, Eye, Search, Trash2, X } from 'lucide-react'
-import {Form, FormikProvider, useFormik} from "formik"
-import * as YUP from  "yup"
-import { createDeposit, deleteDeposit, fetchDeposits } from '../../actions/dashboard'
+import { Eye, Search, X } from 'lucide-react'
+import {  fetchDeposits, WithdrawalAmount } from '../../actions/dashboard'
 import { search, useSearch,sort, filter } from "use-search-react"
-import DeleteModal from '../components/DeleteModal'
 import { clearSuccessError } from '../../reducers/dashboard/DepositSlice'
 import ExportSavingsExcel from '../components/func/ExportSavingsExcel'
 import WithdrawalFormModal from '../components/WithdrawalModal'
@@ -14,16 +11,12 @@ import { Link } from 'react-router-dom'
 
 const Savings = () => {
   const {user} = useSelector((state)=>state.auth)
-  const {data,loading,error,success,stats} = useSelector((state)=>state.deposit)
-  const photoInput = useRef(null)
-  const {usersBalance} = useSelector((state)=>state.withdrawals)
- 
-  const [showModal,setShowModal] = useState(false)
+  const {usersBalance,success, loading, error} = useSelector((state)=>state.withdrawals)
   const [query,setQuery] = useState('')
   const [field, setField] = useState("depositedAt")
   const [order, setOrder] = useState("desc")
   const [statusFilter,setStatusFilter] = useState("all")
- const [withdrawal,setWithdrawal] = useState(null)
+  const [withdrawal,setWithdrawal] = useState(null)
   const [dates,setDates] = useState({startDate:'', endDate:''})
   
   const results = useSearch(
@@ -48,7 +41,12 @@ const Savings = () => {
 
 
 const handleFormSubmit = async (data) => {
-  
+  const formData = {
+    ...data,
+    phone:withdrawal.user.phone,
+    receiver:withdrawal.user.id
+  }
+  dispatch(WithdrawalAmount(formData))
 };
 
 
@@ -82,6 +80,7 @@ useEffect(()=>{
 const handleSubmit = (e)=>{
     e.preventDefault()
     dispatch(fetchDeposits(dates))
+    
 }
 
 useState(()=>{
@@ -106,15 +105,12 @@ const handleWithDrawal = (data)=>{
 
   
 
-      <WithdrawalFormModal isOpen={isOpen} onClose={() => setIsOpen(false)} onSubmit={handleFormSubmit} user={withdrawal} />
+      <WithdrawalFormModal loading={loading} success={success} error={error} isOpen={isOpen} onClose={() => setIsOpen(false)} onSubmit={handleFormSubmit} user={withdrawal} />
 
 
       <div className="my-3">
         
-          {success && <div className='success'>{success}</div>}
-          {error && <div className='error'>{error}</div>}
-        
-
+          
     
         <TableSection title="CLIENTS LIST ">
 
@@ -123,11 +119,13 @@ const handleWithDrawal = (data)=>{
                      <ExportSavingsExcel fileName={`Savings (${dates.startDate} - ${dates.endDate})`} data={results}/>
                      
                      <div className="flex gap-2">
+
                       <div className='flex items-center border border-gray-400 px-2 rounded'>
-                         <Search size={16} className='text-gray-600'/>
+                         <Search size={14} className='text-gray-600'/>
                          <input type='text' name='search' className='border-none outline-none px-2 placeholder:text-sm text-sm 
-                         text-gray-500 py-1' placeholder='Search...' onChange={(e)=>setQuery(e.target.value)}/>
+                         text-gray-500 ' placeholder='Search...' onChange={(e)=>setQuery(e.target.value)}/>
                      </div>
+
                    <div className='w-full'>
                       <select className='input text-xs' translate='no' onChange={(e)=>handleFilter(e.target.value)}>
                       <option>Sort By</option>

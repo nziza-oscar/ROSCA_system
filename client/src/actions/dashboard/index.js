@@ -110,3 +110,19 @@ export const  getAllUserBalances = createAsyncThunk("Withdrawals/all",
     }
 )
 
+
+
+
+export const  WithdrawalAmount = createAsyncThunk("Withdrawals/withdrawal",
+    async(FormData,thunkAPI)=>{
+        try {
+            const {data} = await API.withdrawal(FormData)
+            return {status: "SUCCESS", data: data}
+        } catch (error) {
+            return thunkAPI.rejectWithValue({
+                status:"ERROR",
+                message: error.response?.data?.message || "Failed to fetch getAllUserBalances "
+            })
+        }
+    }
+)

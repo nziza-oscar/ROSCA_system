@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getAllUserBalances } from "../../actions/dashboard";
+import { getAllUserBalances, WithdrawalAmount } from "../../actions/dashboard";
 
 
 const WithdrawalSlice = createSlice({
@@ -34,6 +34,28 @@ const WithdrawalSlice = createSlice({
       state.loading = false
       state.error = action.payload.message
     })
+
+
+
+
+
+
+
+    .addCase(WithdrawalAmount.pending, (state)=>{
+      state.loading = true
+    })
+    .addCase(WithdrawalAmount.fulfilled, (state,action)=>{
+      state.loading = false
+      state.usersBalance = state.usersBalance.map((withDrawal)=>withDrawal.user.id == action.payload.data.receiver ? {...withDrawal,totalWithdrawals: withDrawal.totalWithdrawals + action.payload.data.amount }: withDrawal)
+     state.success = "Successfully withdrew "
+    })
+    .addCase(WithdrawalAmount.rejected, (state,action)=>{
+      
+      state.loading = false
+      state.error = action.payload.message
+    })
+
+
 
   }
 })
