@@ -131,7 +131,7 @@ export default function Header({ toggleSidebar, user, logout }) {
       <div className="flex items-center space-x-4">
         <div id="google_translate_element" className="" ref={googleTranslateRef}></div>
         
-        <div className="">
+        <div className="responsive-sm">
            <Language onLanguageChange={handleLanguageChange} />
         </div>
 
@@ -193,6 +193,7 @@ export default function Header({ toggleSidebar, user, logout }) {
             onClick={() => setUserDropdownOpen(!userDropdownOpen)}
             className="flex items-center hover:bg-gray-100 rounded-lg px-3 py-2 transition-colors"
           >
+            <img src={`https://ui-avatars.com/api/?name=${user?.name}&background=005f78&color=fff`} className="w-10 h-10  rounded-full"/>
             <span className="font-medium text-xs text-slate-700 whitespace-nowrap">Hi, {user?.name}</span>
             <ChevronDown
               size={16}

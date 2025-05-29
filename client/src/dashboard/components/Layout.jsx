@@ -1,9 +1,9 @@
 "use client"
 
-import { use, useEffect, useState } from "react"
+import {  useEffect, useState } from "react"
 import Sidebar from "./Sidebar"
 import Header from "./Header"
-import { Outlet, useNavigate } from "react-router-dom"
+import { Outlet, useLocation } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
 import { fetchMyData, fetchUsers } from "../../actions/users"
 import { logout } from "../../reducers/users/authSlice"
@@ -12,15 +12,11 @@ import { fetchDeposits, getAllUserBalances, skippedDeposit } from "../../actions
 export default function Layout() {
    const [screenSize, setScreenSize] = useState("");
    const [openSidebar, setOpenSidebar] = useState(true)
-
   const dispatch = useDispatch()
-  const {user, loading} = useSelector((state)=>state.auth)
-  const navigate = useNavigate()
+  const {user} = useSelector((state)=>state.auth)
+  const location = useLocation()
 
-
-  const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen)
-  }
+ 
 
   useEffect(()=>{
     const dates = new Date();
@@ -34,10 +30,6 @@ export default function Layout() {
     dispatch(fetchUsers())
   },[])
 
-  const handleLogout = ()=>{
-     dispatch(logout())
-    navigate("/")
-  }
 
    useEffect(()=>{
         if(user){
@@ -94,7 +86,10 @@ export default function Layout() {
     setOpenSidebar((prev)=>!prev)
    }
 
-
+useEffect(()=>{
+  setOpenSidebar(false)
+},[location])
+   
   return (
     <div className="min-h-screen bg-gray-100 w-full">
    

@@ -1,5 +1,5 @@
 
-import { Book, BookMarked, Briefcase, Calendar, Home, University, Users, Weight } from "lucide-react"
+import { Book, BookMarked, Briefcase, Calendar, Home, University, Users, Weight ,Bell} from "lucide-react"
 import { useState, useRef, useEffect} from "react"
 import { NavLink } from "react-router-dom"
 import logo from "../../assets/logo.png"
@@ -11,7 +11,9 @@ export default function Sidebar() {
   const menuItems = [
     { name: "Dashboard", icon: Home , to:"/dashboard/home"},
     { name: "Balance", icon: Weight, to:"/dashboard/balance" },
-    { name: "Debts", icon: Calendar , to:"/dashboard/debts" }
+    { name: "Debts", icon: Calendar , to:"/dashboard/debts" },
+    { name: "Notifications", icon:Bell  , to:"/dashboard/notifications" },
+
   ]
 
    const adminItems = [
@@ -21,6 +23,7 @@ export default function Sidebar() {
     { name: "Users", icon: Users , to:"/dashboard/users"},
     { name: "Deposit Request", icon: Briefcase , to:"/dashboard/deposit-request"},
     { name: "Historique", icon:BookMarked , to:"/dashboard/historic"},
+    { name: "Notifications", icon:Bell  , to:"/dashboard/notifications" },
    
   ]
 

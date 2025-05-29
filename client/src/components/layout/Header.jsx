@@ -127,21 +127,21 @@ const Header = () => {
                         <NavLink to="/" className="py-2 border-white">Home </NavLink>
                       </li>
                       <li>
-                        <a href="#" className="py-2 hover:border-b-2 hover:border-white">
+                        <Link to="/mission" className="py-2 hover:border-b-2 hover:border-white whitespace-nowrap">
                       Mission
-                    </a></li>
+                    </Link></li>
                       <li>
-                         <a href="#" className="py-2 hover:border-b-2 hover:border-white">
+                         <Link to="/how" className="py-2 hover:border-b-2 hover:border-white whitespace-nowrap">
                           How to
-                        </a>
+                        </Link>
                       </li>
                       <li>
-                         <Link to="/login" className="py-2 hover:border-b-2 hover:border-white">
+                         <Link to="/login" className="py-2 hover:border-b-2 hover:border-white whitespace-nowrap">
                       Login
                     </Link>
                       </li>
                       <li>
-                        <Link to="/register" className="py-2 hover:border-b-2 hover:border-white">
+                        <Link to="/register" className="py-2 hover:border-b-2 hover:border-white whitespace-nowrap">
                       Register
                     </Link>
                       </li>
