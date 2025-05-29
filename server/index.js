@@ -20,7 +20,7 @@ const authRoutes = require('./routes/authRoutes');
 const withdrawalRoutes = require("./routes/withdrawalRoutes")
 // Use Routes
 
-app.use("/api/home",(req,res)=>{
+app.use("/home",(req,res)=>{
   return res.json({message: "welcome to our ROSCA platform"})
 })
 app.use('/api/users', userRoutes);
