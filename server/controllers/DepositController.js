@@ -1,6 +1,8 @@
 
-const Deposit = require("../models/deposit")
 
+
+const Deposit = require("../models/deposits")
+const Withdrawal = require('../models/Withdrawal');
 const {uploadToCloudinary,deleteFromCloudinary} = require("./cloudinaryService")
 const mongoose = require("mongoose")
 const User = require("../models/User")

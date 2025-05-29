@@ -16,16 +16,16 @@ mongoose.connect(process.env.DBURL, {
 // Import Routes
 const userRoutes = require('./routes/userRoutes');
 const authRoutes = require('./routes/authRoutes');
-// const depositRoutes = require("./routes/depositRoutes")
+const depositRoutes = require("./routes/depositRoutes")
 const withdrawalRoutes = require("./routes/withdrawalRoutes")
 // Use Routes
 
 app.use("/home",(req,res)=>{
-  return res.json({message: "welcome to our ROSCA platform"})
+  return res.json({message: "welcome to our ishema platform"})
 })
 app.use('/api/users', userRoutes);
 app.use('/api/auth', authRoutes);
-// app.use("/api/deposit", depositRoutes)
+app.use("/api/deposit", depositRoutes)
 app.use("/api/withdrawals", withdrawalRoutes)
 
 app.use((req,res,next)=>{
