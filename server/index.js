@@ -16,8 +16,8 @@ mongoose.connect(process.env.DBURL, {
 // Import Routes
 const userRoutes = require('./routes/userRoutes');
 const authRoutes = require('./routes/authRoutes');
-const depositRoutes = require("./routes/depositRoutes")
-const withdrawalRoutes = require("./routes/withdrawalRoutes")
+// const depositRoutes = require("./routes/depositRoutes")
+// const withdrawalRoutes = require("./routes/withdrawalRoutes")
 // Use Routes
 
 app.use("/api/home",(req,res)=>{
@@ -25,8 +25,8 @@ app.use("/api/home",(req,res)=>{
 })
 app.use('/api/users', userRoutes);
 app.use('/api/auth', authRoutes);
-app.use("/api/deposit", depositRoutes)
-app.use("/api/withdrawals", withdrawalRoutes)
+// app.use("/api/deposit", depositRoutes)
+// app.use("/api/withdrawals", withdrawalRoutes)
 
 app.use((req,res,next)=>{
    

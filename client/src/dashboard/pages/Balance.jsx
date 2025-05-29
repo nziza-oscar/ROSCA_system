@@ -37,10 +37,10 @@ const Balance = () => {
   )
 
   const dispatch = useDispatch()
-
+const [filled,setFilled] = useState(0)
   const formik = useFormik({
     initialValues:{
-      amount:user.position * 1000,
+      amount:1000,
       proof:null
     },
     onSubmit:(values)=>{
@@ -122,6 +122,16 @@ useEffect(()=>{
      }
 },[data])
 
+const [ form, setForm] = useState([])
+
+useEffect(()=>{
+   const val = formik.getFieldProps("amount").value
+const otherDays = Array.from({length: val/1000},(_,i)=>({amount:1000, date:""}))
+setForm(otherDays)
+console.log(otherDays)
+
+},[formik.getFieldProps("amount").value])
+
   return (
     <div>
     {
@@ -156,9 +166,9 @@ useEffect(()=>{
             <Form encType="multipart/form-data">
                 <div>
                 <label className='label'>Amount</label>
-                <input type='number' step={0.001} name='amount' className='input bg-gray-200' placeholder='Enter amount....'
+                <input type='number' step={0.001} name='amount' className='input text-xs ' placeholder='Enter amount....'
                  {...formik.getFieldProps("amount")}
-                 readOnly
+               
                 />
                 {
                   formik.errors.amount && formik.touched.amount && <div className='py-1 text-red-500 text-sm'>{formik.errors.amount}</div>
@@ -167,7 +177,7 @@ useEffect(()=>{
 
               <div>
                 <label className='label'>Proof</label>
-                <input type='file' step={0.001} name='proof' className='input'
+                <input type='file' step={0.001} name='proof' className='input text-xs'
                    ref={photoInput}
                   onChange={(event)=>{
                     formik.setFieldValue("proof",event.currentTarget.files[0])
@@ -179,6 +189,8 @@ useEffect(()=>{
               formik.errors.proof && <div className="text-red-500 py-2 font-bold">{formik.errors.proof}*</div>
             }
               </div>
+
+             
 
               <div className="py-2 border-b border-gray-200">
                 <button disabled={loading} type='submit' className='btn bg-purple-500 w-64 text-center'>{loading ?"Saving":"Send"}</button>
