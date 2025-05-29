@@ -73,7 +73,7 @@ const LoginPage = () => {
          <FormikProvider value={formik}>
          <Form className="space-y-6" >
           
-             <div className="flex gap-2">
+             <div className="flex flex-col lg:flex-row gap-2">
                  <div>
                
                     <label htmlFor="" className="block text-sm text-gray-500">Names: </label>
@@ -114,7 +114,7 @@ const LoginPage = () => {
               </div>
              </div>
 
-            <div className="flex gap-2">
+            <div className="flex  flex-col lg:flex-row gap-2">
                   <div>
                
                     <label htmlFor="" className="block text-sm text-gray-500">Phonenumber: </label>
@@ -157,7 +157,7 @@ const LoginPage = () => {
 
             </div>
            
-           <div className="flex gap-2">
+           <div className="flex  flex-col lg:flex-row gap-2">
               <div>
               <label htmlFor="password" className="text-sm text-gray-600">Password</label>
               <Input
@@ -223,7 +223,9 @@ const LoginPage = () => {
                 type="submit"
                 className="cursor-pointer w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               >
-                Sign up
+                {
+                  loading ? "Processing...": "Sign up"
+                }
               </button>
             </div>
           </Form>

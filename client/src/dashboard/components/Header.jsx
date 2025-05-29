@@ -50,10 +50,7 @@ export default function Header({ toggleSidebar, user, logout }) {
   const unreadCount = notifications.filter((n) => n.unread).length
 
   
-    const googleTranslateRef = useRef(null)
-
-  
-
+  const googleTranslateRef = useRef(null)
   useEffect(()=>{
     let intervalId;
           const googleTranslateElementInit = () => {

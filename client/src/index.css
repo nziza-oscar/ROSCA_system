@@ -274,10 +274,29 @@ td{
   position: relative;
   display: block;
 }
-
+.responsive-sm{
+  display: block;
+}
+.responsive-lg{
+  display: none;
+}
 @media(max-width: 580px){
   .notification{
     display: none;
+  }
+  .responsive-sm{
+    display: none;
+  }
+  .responsive-lg{
+    display: block;
+  }
+}
+@media(max-width: 768px){
+    .responsive-sm{
+    display: none;
+  }
+  .responsive-lg{
+    display: block;
   }
 }
 
