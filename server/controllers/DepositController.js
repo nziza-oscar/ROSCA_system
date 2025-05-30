@@ -10,13 +10,13 @@ const mongoose = require("mongoose")
 const User = require("../models/User")
 exports.createDeposit = async (req, res) => {
   try {
-    const {amount} = req.body
+    const {amount,date} = req.body
     if(!req.file) return res.json({message: "No proof were given"})
     if(!req.userId) return res.status(403).json({message: "Unauthorized action"})
     const fileBuffer = req.file.buffer
     const result = await uploadToCloudinary(fileBuffer)
     
-    let deposit = new Deposit({amount: amount, proof:{url: result.secure_url, public_id: result.public_id}});
+    let deposit = new Deposit({amount: amount,depositedAt:date, proof:{url: result.secure_url, public_id: result.public_id}});
         deposit.depositedBy = req.userId
     const saved = await deposit.save();
     res.status(201).json(saved);

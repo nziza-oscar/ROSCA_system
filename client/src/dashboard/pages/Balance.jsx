@@ -41,7 +41,8 @@ const [filled,setFilled] = useState(0)
   const formik = useFormik({
     initialValues:{
       amount:1000,
-      proof:null
+      proof:null,
+      date:""
     },
     onSubmit:(values)=>{
         dispatch(createDeposit(values))
@@ -49,6 +50,7 @@ const [filled,setFilled] = useState(0)
     },
     validationSchema: YUP.object({
       amount: YUP.number().required("Amount is required").min(1000, "Amafaranga ni make. shyiramo byibuze 1000FRW"),
+      date: YUP.number().required("Date is required"),
       proof:YUP.mixed().required("Proof is required").test("fileType",'Only JPG,JPEG,PNG files are allowed',(value)=>{
             return value && ['image/jpeg','image/jpg','image/png'].includes(value.type)
             }).test("fileSize", "file size must be less 5MB",(value)=>{
@@ -164,31 +166,44 @@ console.log(otherDays)
            {error && <div className='error'>{error}</div>}
 
             <Form encType="multipart/form-data">
-                <div>
-                <label className='label'>Amount</label>
-                <input type='number' step={0.001} name='amount' className='input text-xs ' placeholder='Enter amount....'
-                 {...formik.getFieldProps("amount")}
-               
-                />
-                {
-                  formik.errors.amount && formik.touched.amount && <div className='py-1 text-red-500 text-sm'>{formik.errors.amount}</div>
-                }
-              </div>
+                <div className="flex gap-2">
+                  <div className='w-full'>
+                      <label className='label'>Amount</label>
+                      <input type='number' step={0.001} name='amount' className='input text-xs ' placeholder='Enter amount....'
+                      {...formik.getFieldProps("amount")}
+                    
+                      />
+                      {
+                        formik.errors.amount && formik.touched.amount && <div className='py-1 text-red-500 text-sm'>{formik.errors.amount}</div>
+                      }
+                </div>
 
-              <div>
-                <label className='label'>Proof</label>
-                <input type='file' step={0.001} name='proof' className='input text-xs'
-                   ref={photoInput}
-                  onChange={(event)=>{
-                    formik.setFieldValue("proof",event.currentTarget.files[0])
-                  }}
-                accept="image/*"
-              
-                />
-                 {
-              formik.errors.proof && <div className="text-red-500 py-2 font-bold">{formik.errors.proof}*</div>
-            }
-              </div>
+                <div className='w-full'>
+                  <label className='label'>Date</label>
+                  <input type='date' step={0.001} name='date' className='input text-xs ' placeholder='Enter amount....'
+                  {...formik.getFieldProps("date")}
+                
+                  />
+                  {
+                    formik.errors.date && formik.touched.date && <div className='py-1 text-red-500 text-sm'>{formik.errors.date}</div>
+                  }
+                </div>
+
+                </div>
+                <div>
+                  <label className='label'>Proof</label>
+                  <input type='file' step={0.001} name='proof' className='input text-xs'
+                    ref={photoInput}
+                    onChange={(event)=>{
+                      formik.setFieldValue("proof",event.currentTarget.files[0])
+                    }}
+                  accept="image/*"
+                
+                  />
+                  {
+                formik.errors.proof && formik.touched.proof && <div className="text-red-500 py-2 font-bold">{formik.errors.proof}*</div>
+              }
+                </div>
 
              
 
@@ -204,7 +219,7 @@ console.log(otherDays)
           <span className='text-gray-400'>|</span>
           <h3 className='text-sm'>Names: <b>Rutagengwa Augustin</b></h3>
         </div>
-        <marquee><b className='text-sm'>N.B: Remember to take phone screenshoot photo after paying</b>.</marquee>
+        <marquee><b className='text-sm'>N.B: Remember to take phone screenshoot photo after paying</b></marquee>
       </div>
   </div>
 

@@ -75,7 +75,7 @@ export default function Layout() {
         else{
           setOpenSidebar(true)
         }
-    },[screenSize])
+    },[screenSize,location])
 
   
    const LogoutUser = ()=>{
@@ -86,9 +86,6 @@ export default function Layout() {
     setOpenSidebar((prev)=>!prev)
    }
 
-useEffect(()=>{
-  setOpenSidebar(false)
-},[location])
 
    
   return (

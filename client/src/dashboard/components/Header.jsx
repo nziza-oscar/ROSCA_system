@@ -195,7 +195,7 @@ export default function Header({ toggleSidebar, user, logout }) {
             className="flex items-center hover:bg-gray-100 rounded-lg px-3 py-2 transition-colors"
           >
             <img src={`https://ui-avatars.com/api/?name=${user?.name}&background=005f78&color=fff`} className="w-10 h-10  rounded-full"/>
-            <span className="font-medium text-xs text-slate-700 whitespace-nowrap">Hi, {user?.name}</span>
+            <span className="font-medium text-xs text-slate-700 whitespace-nowrap px-1">{user?.name}</span>
               <ChevronDown
                 size={16}
                 className={`ml-2 text-gray-500 transition-transform ${userDropdownOpen ? "rotate-180" : ""}`}
@@ -208,7 +208,7 @@ export default function Header({ toggleSidebar, user, logout }) {
                 <div className="flex items-center space-x-3">
                   
                   <div>
-                    <p className=" text-sm text-slate-700">Hi, {user?.name}</p>
+                    <p className=" text-sm text-slate-700">{user?.name}</p>
                     {/* <p className="text-xs text-gray-500 word-wrap text-wrap">{user.email}</p> */}
                   </div>
                 </div>

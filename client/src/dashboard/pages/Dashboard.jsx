@@ -31,9 +31,7 @@ useEffect(() => {
 
   return (
 
-      <div className="flex-1 flex flex-col overflow-hidden">
-      
-        <main className="flex-1 overflow-y-auto p-4">
+        <main className="flex-1 overflow-y-auto p-4 min-h-screen">
           {/* Stats Section */}
           {
           user &&   user.role == "admin" &&  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
@@ -64,7 +62,7 @@ useEffect(() => {
           </div>
             }
         </main>
-      </div>
+
 
   )
 }
