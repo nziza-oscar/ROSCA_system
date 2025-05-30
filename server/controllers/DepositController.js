@@ -68,7 +68,7 @@ exports.getAllDeposits = async (req, res) => {
       }
     ]);
 
-    const stats = result[0] || { totalAmount: 0, approvedAmount: 0, rejectedAmount:0 , filter};
+    const stats = result[0] || { totalAmount: 0, approvedAmount: 0, rejectedAmount:0 };
 
 
     const deposits = await Deposit.find(filter).populate("depositedBy confirmedBy");
