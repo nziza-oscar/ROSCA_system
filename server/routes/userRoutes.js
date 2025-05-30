@@ -1,10 +1,11 @@
 const express = require('express');
 const { registerUser, updateUserInfo,addUserAddress,
-    updateUserAddress,deleteAddress } = require('../controllers/userController');
+    updateUserAddress,deleteAddress,updateUserPassword } = require('../controllers/userController');
 const router = express.Router();
 const {isAuthorized} = require("../middleware/Authorized")
 
 router.post('/register', registerUser);
+router.put('/password', isAuthorized,updateUserPassword);
 router.put("/update", isAuthorized, updateUserInfo)
 router.post("/address", isAuthorized, addUserAddress)
 router.put("/address/:id/update", isAuthorized, updateUserAddress)

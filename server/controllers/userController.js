@@ -8,18 +8,54 @@ exports.registerUser = async (req, res) => {
     res.send({ message: 'User registered successfully' });
 };
 
+
+exports.updateUserPassword = async (req, res) => {
+  try {
+    const userId = req.userId
+    const { currentPassword, newPassword,confirmPassword } = req.body
+
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ message: 'All fields are required' })
+    }
+
+     if (confirmPassword !== newPassword) {
+      return res.status(400).json({ message: 'New password is not equal to confirm password' })
+    }
+
+
+    const user = await User.findById(userId).select("name +password")
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' })
+    }
+
+   const isMatch = await user.comparePassword(currentPassword);
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Current password is incorrect' });
+    }
+
+   
+    user.password = newPassword
+    await user.save()
+
+    res.status(200).json({ message: 'Password updated successfully' })
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ message: 'Server error' })
+  }
+}
+
+
+
 exports.updateUserInfo = async(req,res)=>{
     try {
-        const {names,email,phone,dob,language,currency} = req.body
+        const {name,email,phone,dob,position,idno} = req.body
         const countEm = await User.findOne({email: email, _id:{$ne: req.userId}}).countDocuments()
         
         if(countEm >= 1) return res.status(403).json({message: "*Email already taken"})
 
         const user = await User.findByIdAndUpdate(req.userId, {
-            name:names,email, dob, phone, settings:{
-                language: language,
-                currency: currency
-            }
+            name,email, dob, phone,email,position,idno
         })
 
         if(!user) return res.status(403).json({message: 'Failed to update'})
