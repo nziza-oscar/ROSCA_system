@@ -257,8 +257,7 @@ console.log(otherDays)
               <thead>
                 <tr>
                   <th>#</th>
-                  {/* <th>Transaction Id</th> */}
-                { (["admin"].includes(user.role)) &&  <><th>Names</th><th>Email</th><th>Phone</th></> }
+                 
                   <th>Amount</th>
                   <th>Date</th>
                   <th>Status</th>

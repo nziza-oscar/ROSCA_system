@@ -29,10 +29,11 @@ exports.getAllDeposits = async (req, res) => {
   try {
     let filter = {};
      const {startDate,endDate,all} = req.query
+     const userId = req.userId;
       
 
     if (req.userRole !== 'admin') {
-      filter.depositedBy = req.userId;
+      filter.depositedBy = new mongoose.Types.ObjectId(userId)
     }
    if(startDate != "undefined" && endDate!="undefined"){
      const start = new Date(startDate);
@@ -46,7 +47,6 @@ exports.getAllDeposits = async (req, res) => {
    }
 
 
-    const userId = req.userId;
     const condition = userId&& req.userRole=="user" ? {depositedBy: new mongoose.Types.ObjectId(userId) } : {}
     const result = await Deposit.aggregate([
       { $match: filter },
@@ -68,7 +68,7 @@ exports.getAllDeposits = async (req, res) => {
       }
     ]);
 
-    const stats = result[0] || { totalAmount: 0, approvedAmount: 0, rejectedAmount:0 };
+    const stats = result[0] || { totalAmount: 0, approvedAmount: 0, rejectedAmount:0 , filter};
 
 
     const deposits = await Deposit.find(filter).populate("depositedBy confirmedBy");

@@ -34,7 +34,7 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <>
       {/* Auth routes without main layout */}
-      <Route path="dashboard" element={<ProtectedRoutes/>} errorElement={ErrorBoundary}>
+      <Route path="dashboard" element={<ProtectedRoutes/>} errorElement={<ErrorBoundary/>}>
         <Route index element={<Delaying><Dashboard/></Delaying>}/>
         <Route path="home" element={<Delaying><Dashboard/></Delaying>}/>
         <Route path="users" element={<Delaying><Users/></Delaying>}/>
@@ -51,7 +51,7 @@ const router = createBrowserRouter(
       </Route>
 
   
-      <Route path="/" element={<Layout />} errorElement={ErrorBoundary}>
+      <Route path="/" element={<Layout />} errorElement={<ErrorBoundary/>}>
         <Route index element={<HomePage/>} />
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterPage />} />
