@@ -36,21 +36,21 @@ const DepositRequest = () => {
     }
   })
 
-//   const results = useSearch(
-//     data,
-//     query,
-//     search({
-//      fields:['name','amount','status','depositedAt'],
-//      matchType:"fuzzy" 
-//     }),
-//     sort({field:field,order:order}),
-//     filter({
-//         conditions: statusFilter === "all" ? [] : [
-//               { field: "status", operator: "equals", value: statusFilter },
-//             ],
-//       missingFieldBehavior: "exclude", // Handle missing fields
-//     })
-//   )
+  const results = useSearch(
+    deposits,
+    query,
+    search({
+     fields:['name','amount','status','depositedAt'],
+     matchType:"fuzzy" 
+    }),
+    sort({field:field,order:order}),
+    filter({
+        conditions: statusFilter === "all" ? [] : [
+              { field: "status", operator: "equals", value: statusFilter },
+            ],
+      missingFieldBehavior: "exclude", // Handle missing fields
+    })
+  )
 
 
   const dispatch = useDispatch()
@@ -264,7 +264,9 @@ useEffect(() => {
          <div className="search flex flex-col lg:flex-row justify-between pb-4 gap-3">
             <div className='flex items-center border border-gray-400 px-2 rounded'>
                 <Search size={16} className='text-gray-600'/>
-                <input type='text' name='search' className='border-none outline-none px-2 placeholder:text-sm text-sm text-gray-500 py-2' placeholder='Search...'/>
+                <input type='text' name='search' 
+                className='border-none outline-none px-2 placeholder:text-sm text-sm text-gray-500 py-2' 
+                placeholder='Search...' onChange={(e)=>setQuery(e.target.value)}/>
             </div>
             <div className="flex gap-2">
           <div className='w-full'>
@@ -311,10 +313,14 @@ useEffect(() => {
               </thead>
               <tbody>
                 {
-                    deposits.length == 0 && <tr><td colSpan={9}><p className='text-center font-bold'>No pending deposits available on those dates</p></td></tr>
+                    results.length == 0 && <tr>
+                      <td colSpan={9}>
+                          <p className='text-center font-bold'>No pending deposits available </p>
+                      </td>
+                      </tr>
                 }
                 {
-                  deposits && deposits.map((deposit,index)=>(
+                  results && results.map((deposit,index)=>(
                     <tr key={index+1}>
                         <td>{index+1}</td>
                         <td><div className='text-sm'>{deposit?.depositedBy?.name}</div></td>
