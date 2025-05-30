@@ -50,7 +50,7 @@ const [filled,setFilled] = useState(0)
     },
     validationSchema: YUP.object({
       amount: YUP.number().required("Amount is required").min(1000, "Amafaranga ni make. shyiramo byibuze 1000FRW"),
-      date: YUP.number().required("Date is required"),
+      date: YUP.date().required("Date is required"),
       proof:YUP.mixed().required("Proof is required").test("fileType",'Only JPG,JPEG,PNG files are allowed',(value)=>{
             return value && ['image/jpeg','image/jpg','image/png'].includes(value.type)
             }).test("fileSize", "file size must be less 5MB",(value)=>{
@@ -152,7 +152,7 @@ console.log(otherDays)
 
   }
   <div className={`${showModal?`modal`:`hidden`}`}>
-      <div className="modal-content modal-sm">
+      <div className="modal-content modal-sm mx-2">
           <div className="modal-header">
              <h3 className='title uppercase font-bold'>Deposit</h3>
              <div>
@@ -219,7 +219,7 @@ console.log(otherDays)
           <span className='text-gray-400'>|</span>
           <h3 className='text-sm'>Names: <b>Rutagengwa Augustin</b></h3>
         </div>
-        <marquee><b className='text-sm'>N.B: Remember to take phone screenshoot photo after paying</b></marquee>
+        <p><b className='text-xs text-green-600 font-light'>N.B: Remember to take phone screenshoot photo after paying</b></p>
       </div>
   </div>
 

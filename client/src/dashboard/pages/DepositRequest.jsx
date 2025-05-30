@@ -103,6 +103,7 @@ useEffect(()=>{
   const endDate = new Date(year, month, 0, 23, 59, 59, 999);
   setDates({startDate: startDate.toISOString().split("T")[0] ,endDate: endDate.toISOString().split("T")[0]})
 },[])
+const [approving, setApproving] = useState({error:null,success:null, loading: false,data:null})
 
  async function fetchPendingDeposits(startDate,endDate){
          try {
@@ -120,12 +121,11 @@ useEffect(()=>{
 const handleApprove = async(deposit)=>{
     try {
        const {data} = await approveDeposit(deposit)
-       console.log(data)
+      setApproving({error:null, success: "Successfully Approved", loading: false, data})
     } catch (error) {
-       console.log(error)
+      console.log(error)
+      setApproving({error:error.message, success:null, loading: false,data:null})
     }
-    
-   
 }
 
 const handleSubmit = (e)=>{
@@ -144,6 +144,19 @@ useEffect(()=>{
           fetchPendingDeposits(dates.startDate, dates.endDate)
       }
 },[dates])
+
+
+useEffect(() => {
+  if (approving.success || approving.error) {
+    const timeout = setTimeout(() => {
+      setApproving({ success: null, error: null, loading: null, data: null });
+      fetchPendingDeposits(dates.startDate, dates.endDate);
+    }, 4000);
+
+    return () => clearTimeout(timeout);
+  }
+}, [approving.success, approving.error]);
+
 
   return (
     <div>
@@ -275,6 +288,12 @@ useEffect(()=>{
          </div>
          </div>
 
+           {
+            approving.success && <div className='success'>{approving.success}</div>
+           }
+           {
+            approving.error && <div className='error'>{approving.error}</div>
+           }
           {
             loading ? <Loader/> :  <table>
               <thead>
@@ -307,7 +326,7 @@ useEffect(()=>{
                         <td><div className='text-sm'><img src={deposit?.proof?.url} className='cursor-pointer' onClick={()=> setImageSrc(deposit?.proof?.url)}/></div></td>
                         <td>
                             <div className='text-sm flex gap-2'>
-                                <button className='btn bg-green-500' onClick={()=>handleApprove(deposit)}>Approve</button>
+                                <button className='btn bg-green-500' onClick={()=>handleApprove(deposit)}>{approving.loading ? "Processing...": "Approve"}</button>
                                 <button className='btn bg-red-500' onClick={()=>handleRejectDeposit(deposit)}>Reject</button>
                             </div>
                         </td>
