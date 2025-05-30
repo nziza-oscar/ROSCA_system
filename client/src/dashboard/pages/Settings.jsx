@@ -8,7 +8,6 @@ const Settings = () => {
   const [edit, setEdit] = useState(false)
   const dispatch = useDispatch()
   const { user, loading, success, error,ploading, psuccess, perror } = useSelector((state) => state.auth)
-
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -73,17 +72,17 @@ const handlePasswordChange = (e) => {
 
 
   useEffect(()=>{
-      if(perror || psuccess){
+      if(perror || psuccess || success || error){
         const timeout = setTimeout(()=>{
           dispatch(clearSuccessError())
         },4000)
-        console.log(perror)
         return ()=> clearTimeout(timeout)
       }
-  },[perror,psuccess])
+  },[perror,psuccess,success,error])
 
   return (
     <div className="bg-white rounded-lg shadow">
+  
       <div className="flex items-center justify-between p-6 border-b border-gray-200">
         <h2 className="text-lg font-semibold">Personal Information</h2>
         <button
@@ -93,10 +92,8 @@ const handlePasswordChange = (e) => {
           {edit ? <span>Cancel</span> : <><Edit className="w-4 h-4 mr-1" /><span>Edit</span></>}
         </button>
       </div>
-
       <div className="p-6 space-y-3">
         {error && <div className="border border-red-500 bg-red-50 text-sm py-2 px-3 rounded">{error}</div>}
-        {loading && <div className="bg-blue-500 text-white inline-block p-2 rounded">Saving...</div>}
         {success && <div className="border border-green-500 bg-green-50 text-sm py-2 px-3 rounded capitalize">{success}</div>}
 
         <form onSubmit={handleSubmit}>
