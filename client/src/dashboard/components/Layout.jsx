@@ -89,6 +89,7 @@ export default function Layout() {
 useEffect(()=>{
   setOpenSidebar(false)
 },[location])
+
    
   return (
     <div className="min-h-screen bg-gray-100 w-full">

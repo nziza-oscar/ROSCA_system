@@ -259,7 +259,7 @@ td{
 }
 
 .label{
-  @apply text-gray-600 text-sm font-semibold block py-2;
+  @apply text-gray-600 text-xs lg:text-sm font-semibold block py-2;
 }
 .input{
   @apply w-full border  px-2 placeholder:text-sm py-[7px] border-gray-300  rounded focus:outline-none resize-none focus:border-gray-500;

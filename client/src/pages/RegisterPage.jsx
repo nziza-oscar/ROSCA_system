@@ -9,6 +9,8 @@ import { Form, FormikProvider, useFormik } from "formik"
 import * as Yup from "yup"
 import { useDispatch, useSelector } from "react-redux"
 import {signIn, signUp} from "../actions/users/index"
+import { clearSuccessError } from "../reducers/users/authSlice"
+import { useEffect } from "react"
 const LoginPage = () => {
 
 
@@ -41,6 +43,17 @@ const LoginPage = () => {
     })
   })
 
+  
+    useEffect(()=>{
+           if(error){
+             const timeout = setTimeout(()=>{
+                 dispatch(clearSuccessError())
+             },4000)
+             return ()=>clearTimeout(timeout)
+           }
+    },[error])
+  
+
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
@@ -67,7 +80,9 @@ const LoginPage = () => {
          
         {
           error &&  <div className="bg-red-100 px-2 py-3 mb-2 rounded font-bold  text-red-600">
-                      <p>{error}</p>
+                      <p>{
+                         error.toString().includes("idno_1 dup key") ? "ID number already given by other person":error
+                        }</p>
                     </div>
         }
          <FormikProvider value={formik}>

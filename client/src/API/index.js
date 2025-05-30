@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 const API = axios.create({
-  // baseURL: 'http://localhost:5000/api',
-  baseURL: 'https://ishema-api.onrender.com/api',
+  baseURL: 'http://localhost:5000/api',
+  // baseURL: 'https://ishema-api.onrender.com/api',
   headers: { 'Content-Type': 'application/json' }
 });
 
@@ -29,19 +29,17 @@ export const updateUser = (formData)=>API.put(`/auth/add-users/${formData._id}`,
 export const fetchUsers = ()=>API.get("/auth/users")
 export const deleteUser = (userId)=>API.delete("/auth/add-users")
 
-// _______________________customers _____________________________
-
-// export const createUser = (formData)=>API.post("/auth/add-users",formData)
-// export const createUser = (formData)=>API.post("/auth/add-users",formData)
-
-
 
 // ******************* USER INFO ***********
 export const updateUserInfo = (info)=>API.put('/users/update', info)
 export const addUserAddress = (info)=> API.post("/users/address", info)
 export const updateUserAddress = (info)=> API.put(`/users/address/${info.id}/update`, info)
 export const removeAddress = (id)=> API.delete(`/users/address/${id}/remove`)
-// export const user = ()=> API.put()
-// export const user = ()=> API.put()
+
+
+
+// dangerzone
+
+export const updateUserPassword = (info)=>API.put('/users/password', info)
 
 

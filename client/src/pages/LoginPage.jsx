@@ -9,12 +9,14 @@ import { Form, FormikProvider, useFormik } from "formik"
 import * as Yup from "yup"
 import { useDispatch, useSelector } from "react-redux"
 import {signIn} from "../actions/users/index"
+import { useEffect } from "react"
+import { clearSuccessError } from "../reducers/users/authSlice"
 const LoginPage = () => {
 
 
    const {error,loading} = useSelector((state)=>state.auth)
    const dispatch = useDispatch()
-   const navigate = useNavigate()
+
 
   const formik = useFormik({
     initialValues:{
@@ -31,6 +33,18 @@ const LoginPage = () => {
       password:Yup.string().min(8,"Password must be 8 characters long").required("Password is required!")
     })
   })
+
+
+  useEffect(()=>{
+         if(error){
+           const timeout = setTimeout(()=>{
+               dispatch(clearSuccessError())
+           },4000)
+
+           return ()=>clearTimeout(timeout)
+         }
+  },[error])
+
 
 
   return (
@@ -114,18 +128,20 @@ const LoginPage = () => {
                 </label>
               </div>
 
-              <div className="text-sm">
-             
-              </div>
+            
             </div>
 
-
+            <div className="text-sm">
+              <p className="text-xs">Don't have an account? <Link to="/register" className="text-blue-500 hover:underline">Register</Link> </p>
+            </div>
             <div>
               <button
                 type="submit"
-                className="cursor-pointer w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                className="btn cursor-pointer w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               >
-                Sign in
+                {
+                  loading ? "Processing...":"Sign in"
+                }
               </button>
             </div>
           </Form>

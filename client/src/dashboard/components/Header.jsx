@@ -2,6 +2,7 @@
 import { useEffect, useRef , useState} from "react";
 import { Bell, Menu, ChevronDown, Settings , LogOut, Mail, MessageSquare, AlertCircle  } from "lucide-react"
 import Language from "./Language";
+import { Link } from "react-router-dom";
 
 export default function Header({ toggleSidebar, user, logout }) {
 
@@ -116,7 +117,7 @@ export default function Header({ toggleSidebar, user, logout }) {
 
 
   return (
-    <header className="bg-white h-24 lg:h-16 px-4 flex items-center justify-between border-b border-gray-300 shadow-sm w-full z-64">
+    <header className="bg-white h-24 lg:h-16 px-4 flex items-center justify-between border-b border-gray-300 shadow-sm w-full z-64 sticky top-0">
       
       <div className="flex relative gap-2 items-center">
         <button onClick={toggleSidebar} className="p-2 rounded-md bg-navy-900 text-white cursor-pointer">
@@ -195,10 +196,10 @@ export default function Header({ toggleSidebar, user, logout }) {
           >
             <img src={`https://ui-avatars.com/api/?name=${user?.name}&background=005f78&color=fff`} className="w-10 h-10  rounded-full"/>
             <span className="font-medium text-xs text-slate-700 whitespace-nowrap">Hi, {user?.name}</span>
-            <ChevronDown
-              size={16}
-              className={`ml-2 text-gray-500 transition-transform ${userDropdownOpen ? "rotate-180" : ""}`}
-            />
+              <ChevronDown
+                size={16}
+                className={`ml-2 text-gray-500 transition-transform ${userDropdownOpen ? "rotate-180" : ""}`}
+              />
           </button>
 
           {userDropdownOpen && (
@@ -214,13 +215,12 @@ export default function Header({ toggleSidebar, user, logout }) {
               </div>
               <div className="py-2">
                 
-                <a
-                  href="#"
+                <Link to="settings"
                   className="flex items-center  px-2 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
                 >
                   <Settings size={16} className="mr-3" />
                   Account Settings
-                </a>
+                </Link>
             
               </div>
               <div className="border-t border-gray-200 py-2">

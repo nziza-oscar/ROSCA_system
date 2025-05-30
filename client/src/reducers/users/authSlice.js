@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
  
-import { createUser, createUserAddressThunk, deleteUserAddressThunk, fetchMyData, fetchUsers, signIn, signUp, updateUserAddressThunk, updateUserInfoThunk } from "../../actions/users/index"
+import { createUser, createUserAddressThunk, deleteUserAddressThunk, fetchMyData, fetchUsers, signIn, signUp, updateUserAddressThunk, updateUserInfoThunk, updateUserPasswordThunk } from "../../actions/users/index"
 
 
 const handleAuthSuccess = (state, action) => {
@@ -31,6 +31,9 @@ const authSlice = createSlice({
       error: null,
       users:[],
       success:null,
+      ploading: false,
+      perror:null,
+      psuccess:null
     },
     reducers: {
       logout: (state) => {
@@ -42,10 +45,24 @@ const authSlice = createSlice({
       clearSuccessError(state){
         state.error = null;
         state.success = null
+        state.perror = null
+        state.psuccess = null
       }
     },
     extraReducers: (builder) => {
       builder
+        .addCase(updateUserPasswordThunk.pending, (state)=>{
+          state.ploading = true
+        })
+        .addCase(updateUserPasswordThunk.fulfilled, (state,action)=>{
+          state.ploading = false
+          state.perror = null
+           state.psuccess = "Password successfully updated..."
+        })
+        .addCase(updateUserPasswordThunk.rejected, (state,action)=>{
+          state.perror = action.payload.message
+          state.ploading = false
+        })
         .addCase(signIn.pending, (state) => {
           state.loading = true;
           state.error = null;

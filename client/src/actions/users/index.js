@@ -142,3 +142,25 @@ export const updateUserInfoThunk = createAsyncThunk('USERS/update', async (info,
   });
 
   
+
+
+
+  // update danger zone
+
+
+  export const updateUserPasswordThunk = createAsyncThunk(
+  'USERS/updatePassword',
+  async (passwordData, thunkAPI) => {
+    try {
+      const response = await API.updateUserPassword(passwordData)
+
+      return { status: 'SUCCESS', data: response.data }
+    } catch (error) {
+      return thunkAPI.rejectWithValue({
+        status: 'ERROR',
+        message:
+          error.response?.data?.message || 'Password update failed',
+      })
+    }
+  }
+)
