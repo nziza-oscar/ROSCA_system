@@ -16,13 +16,15 @@ const getUnreadCount = async (req, res) => {
 };
 
 
-const notify = async ({ not_type, description, from, to }) => {
+const notify = async ({ not_type, description, from, to, title, priority }) => {
   try {
     const toArray = Array.isArray(to) ? to : [to];
     const notification = await Notification.create({
       not_type,
       description,
       from,
+      title,
+      priority,
       to: toArray
     });
 

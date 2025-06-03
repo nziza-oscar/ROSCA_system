@@ -39,6 +39,8 @@ exports.createDeposit = async (req, res) => {
       from: req.userId,
       to: adminIds,
       not_type: 'deposit',
+      title:"New Deposit",
+      priority:'high',
       description: `A deposit of ${amount} FRW was submitted and is pending approval.`
     });
     console.log(notification)

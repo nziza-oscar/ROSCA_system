@@ -81,6 +81,8 @@ exports.register = async (req, res) => {
       from: user._id,
       to: adminIds,
       not_type: 'new_account',
+      title:"New Account Created",
+      priority:'high',
       description: `${user.name} has created a new account.`,
     });
 
