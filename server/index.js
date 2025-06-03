@@ -7,8 +7,9 @@ const port = 5000;
 require('dotenv').config();
 app.use(cors());
 app.use(bodyParser.json());
-mongoose.connect(process.env.MONGO_URI, {
+mongoose.connect(process.env.DBURL, {
 }).then(() => console.log('MongoDB connected')).catch(err => console.log(err));
+
 const userRoutes = require('./routes/userRoutes');
 const authRoutes = require('./routes/authRoutes');
 const depositRoutes = require("./routes/depositRoutes")
