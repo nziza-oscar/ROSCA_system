@@ -40,3 +40,10 @@ export const withdrawal = (FormData)=> API.post("/withdrawals/", FormData, {
     "Content-Type":"multipart/form-data"
   }
 })
+
+
+
+export const fetchNotifications= () => API.get('/notification');
+export const unreadNotifications= () => API.get('/notification/unread-count');
+export const readNotification= () => API.put(`/notification/${notId}/read`);
+export const readAllNotifications= () => API.get('/notification/read-all');

@@ -89,7 +89,7 @@ const LoginPage = () => {
          <Form className="space-y-6" >
           
              <div className="flex flex-col lg:flex-row gap-2">
-                 <div>
+                 <div className="w-full">
                
                     <label htmlFor="" className="block text-sm text-gray-500">Names: </label>
                       <Input
@@ -108,7 +108,7 @@ const LoginPage = () => {
                
 
               </div>
-              <div>
+               <div className="w-full">
                
                     <label htmlFor="" className="block text-sm text-gray-500">ID number: </label>
                       <Input
@@ -130,7 +130,7 @@ const LoginPage = () => {
              </div>
 
             <div className="flex  flex-col lg:flex-row gap-2">
-                  <div>
+                <div className="w-full">
                
                     <label htmlFor="" className="block text-sm text-gray-500">Phonenumber: </label>
                       <Input
@@ -150,7 +150,7 @@ const LoginPage = () => {
 
               </div>
 
-              <div>
+           <div className="w-full">
                
                     <label htmlFor="" className="block text-sm text-gray-500">Email: </label>
                       <Input
@@ -173,7 +173,7 @@ const LoginPage = () => {
             </div>
            
            <div className="flex  flex-col lg:flex-row gap-2">
-              <div>
+             <div className="w-full">
               <label htmlFor="password" className="text-sm text-gray-600">Password</label>
               <Input
                 id="password"
@@ -188,8 +188,7 @@ const LoginPage = () => {
               )}
       
              </div>
-             
-                   <div>
+              <div className="w-full">
                
                     <label htmlFor="" className="block text-sm text-gray-500">Position: </label>
                       <Input

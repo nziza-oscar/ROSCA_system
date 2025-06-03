@@ -1,119 +1,47 @@
 "use client"
 
 import { useState } from "react"
-import NotificationCard from "../../../components/NotificationCard"
-import NotificationFilters from "../../../components/NotificationFilters"
+import NotificationCard from "../components/NotificationCard"
+import NotificationFilters from "../components/NotificationFilters"
 import { Bell } from "lucide-react"
-
-export default function NotificationsPage() {
+import { fetchNotifications } from "../../API/dashboardApi"
+import {useEffect} from "react"
+import { useSelector } from "react-redux"
+export default function Notification() {
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedFilter, setSelectedFilter] = useState("all")
   const [selectedCategory, setSelectedCategory] = useState("all")
+  const {user} = useSelector((state)=>state.auth)
 
   // Sample notifications data
-  const [notifications, setNotifications] = useState([
-    {
-      id: 1,
-      type: "message",
-      title: "New message from John Doe",
-      description:
-        "You have received a new message regarding the project update. Please check your inbox for more details.",
-      time: "2 minutes ago",
-      unread: true,
-      priority: "high",
-      category: "user",
-    },
-    {
-      id: 2,
-      type: "alert",
-      title: "System maintenance scheduled",
-      description:
-        "Scheduled maintenance will begin at 2:00 AM EST. The system will be unavailable for approximately 2 hours.",
-      time: "1 hour ago",
-      unread: true,
-      priority: "medium",
-      category: "system",
-    },
-    {
-      id: 3,
-      type: "success",
-      title: "Payment received",
-      description: "You have successfully received a payment of $150.00 from client ABC Corp.",
-      time: "3 hours ago",
-      unread: false,
-      priority: "low",
-      category: "payment",
-    },
-    {
-      id: 4,
-      type: "alert",
-      title: "Security alert",
-      description: "Unusual login activity detected from a new device. Please verify if this was you.",
-      time: "5 hours ago",
-      unread: true,
-      priority: "high",
-      category: "security",
-    },
-    {
-      id: 5,
-      type: "message",
-      title: "New user registered",
-      description: "Jane Smith has successfully registered and joined your platform.",
-      time: "1 day ago",
-      unread: false,
-      priority: "low",
-      category: "user",
-    },
-    {
-      id: 6,
-      type: "success",
-      title: "Backup completed",
-      description: "Daily backup has been completed successfully. All data is secure.",
-      time: "1 day ago",
-      unread: false,
-      priority: "low",
-      category: "system",
-    },
-    {
-      id: 7,
-      type: "alert",
-      title: "Failed payment attempt",
-      description: "A payment attempt of $75.00 has failed due to insufficient funds.",
-      time: "2 days ago",
-      unread: false,
-      priority: "medium",
-      category: "payment",
-    },
-    {
-      id: 8,
-      type: "message",
-      title: "Profile updated",
-      description: "Your profile information has been successfully updated.",
-      time: "3 days ago",
-      unread: false,
-      priority: "low",
-      category: "user",
-    },
-  ])
+  const [notifications, setNotifications] = useState([])
 
   // Filter notifications based on search term, filter, and category
   const filteredNotifications = notifications.filter((notification) => {
-    const matchesSearch =
-      notification.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      notification.description.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesSearch = notification.description.toLowerCase().includes(searchTerm.toLowerCase()) || notification.from.name.toLowerCase().includes(searchTerm.toLowerCase()) || notification.not_type.toLowerCase().includes(searchTerm.toLowerCase())
 
     const matchesFilter =
       selectedFilter === "all" ||
-      (selectedFilter === "unread" && notification.unread) ||
-      (selectedFilter === "read" && !notification.unread)
+      (selectedFilter === "unread" && !notification.readBy.includes(user._id)) ||
+      (selectedFilter === "read" && notification.readBy.includes(user._id))
 
-    const matchesCategory = selectedCategory === "all" || notification.category === selectedCategory
+    const matchesCategory = selectedCategory === "all" || notification.not_type === selectedCategory
 
     return matchesSearch && matchesFilter && matchesCategory
   })
 
   const unreadCount = notifications.filter((n) => n.unread).length
 
+  const getNotifications = async ()=>{
+    try {
+        const {data} = await fetchNotifications()
+        setNotifications(data)
+        console.log(data)
+    } catch (error) {
+      console.log(error.message)
+    }
+  }
+  
   const handleMarkAsRead = (id) => {
     setNotifications((prev) =>
       prev.map((notification) =>
@@ -135,6 +63,11 @@ export default function NotificationsPage() {
       setNotifications([])
     }
   }
+
+  useEffect(()=>{
+      getNotifications()
+  },[])
+
 
   return (
     <div>
@@ -167,10 +100,11 @@ export default function NotificationsPage() {
         {filteredNotifications.length > 0 ? (
           filteredNotifications.map((notification) => (
             <NotificationCard
-              key={notification.id}
+              key={notification._id}
               notification={notification}
               onMarkAsRead={handleMarkAsRead}
               onDelete={handleDelete}
+              user={user}
             />
           ))
         ) : (
@@ -186,8 +120,8 @@ export default function NotificationsPage() {
         )}
       </div>
 
-      {/* Stats */}
-      {notifications.length > 0 && (
+   
+      {/* {notifications.length > 0 && (
         <div className="mt-8 bg-white rounded-lg shadow p-6">
           <h3 className="text-lg font-semibold mb-4">Notification Statistics</h3>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -211,7 +145,7 @@ export default function NotificationsPage() {
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   )
 }

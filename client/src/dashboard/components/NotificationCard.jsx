@@ -3,7 +3,7 @@
 import { MessageSquare, AlertCircle, Mail, CheckCircle, Trash2, MoreVertical } from "lucide-react"
 import { useState, useRef, useEffect } from "react"
 
-export default function NotificationCard({ notification, onMarkAsRead, onDelete }) {
+export default function NotificationCard({ notification, onMarkAsRead, onDelete,user }) {
   const [showActions, setShowActions] = useState(false)
   const actionsRef = useRef(null)
 
@@ -22,11 +22,11 @@ export default function NotificationCard({ notification, onMarkAsRead, onDelete 
 
   const getNotificationIcon = (type) => {
     switch (type) {
-      case "message":
+      case "deposit":
         return <MessageSquare size={20} className="text-blue-500" />
-      case "alert":
+      case "withdrawal":
         return <AlertCircle size={20} className="text-red-500" />
-      case "success":
+      case "new_account":
         return <CheckCircle size={20} className="text-green-500" />
       default:
         return <Mail size={20} className="text-gray-500" />
@@ -49,15 +49,15 @@ export default function NotificationCard({ notification, onMarkAsRead, onDelete 
   return (
     <div
       className={`bg-white rounded-lg shadow border-l-4 ${getPriorityColor(notification.priority)} p-6 ${
-        notification.unread ? "bg-blue-50" : ""
+        notification.readBy.includes(user._id) ? "bg-blue-50" : ""
       }`}
     >
       <div className="flex items-start justify-between">
         <div className="flex items-start space-x-4 flex-1">
-          <div className="flex-shrink-0 mt-1">{getNotificationIcon(notification.type)}</div>
+          <div className="flex-shrink-0 mt-1">{getNotificationIcon(notification.not_type)}</div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center space-x-2 mb-2">
-              <h3 className="text-lg font-semibold text-gray-900">{notification.title}</h3>
+              <h3 className="text-lg font-semibold text-gray-900 capitalize" translate="no">{notification.from.name}</h3>
               {notification.unread && <div className="w-2 h-2 bg-blue-500 rounded-full"></div>}
               <span
                 className={`px-2 py-1 text-xs font-medium rounded-full ${
@@ -68,13 +68,13 @@ export default function NotificationCard({ notification, onMarkAsRead, onDelete 
                       : "bg-green-100 text-green-800"
                 }`}
               >
-                {notification.priority}
+                {notification.not_type}
               </span>
             </div>
             <p className="text-gray-600 mb-3">{notification.description}</p>
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4 text-sm text-gray-500">
-                <span>{notification.time}</span>
+                <span>{ notification.createdAt.split("T")[0] }</span>
                 <span>•</span>
                 <span className="capitalize">{notification.category}</span>
               </div>

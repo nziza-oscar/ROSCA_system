@@ -1,56 +1,45 @@
 "use client"
 import { useEffect, useRef , useState} from "react";
-import { Bell, Menu, ChevronDown, Settings , LogOut, Mail, MessageSquare, AlertCircle  } from "lucide-react"
+import { Bell, Menu, ChevronDown, Settings , LogOut, Mail, MessageSquare, AlertCircle ,CheckCircle } from "lucide-react"
 import Language from "./Language";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { unreadNotifications,fetchNotifications  } from "../../API/dashboardApi";
 
 export default function Header({ toggleSidebar, user, logout }) {
 
-   const [userDropdownOpen, setUserDropdownOpen] = useState(false)
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false)
   const [notificationDropdownOpen, setNotificationDropdownOpen] = useState(false)
   const userDropdownRef = useRef(null)
   const notificationDropdownRef = useRef(null)
-  
-
-  // Sample notifications data
-  const notifications = [
-    {
-      id: 1,
-      type: "message",
-      title: "New message from John Doe",
-      description: "You have received a new message",
-      time: "2 minutes ago",
-      unread: true,
-    },
-    {
-      id: 2,
-      type: "alert",
-      title: "System maintenance scheduled",
-      description: "Maintenance will start at 2:00 AM",
-      time: "1 hour ago",
-      unread: true,
-    },
-    {
-      id: 3,
-      type: "info",
-      title: "New user registered",
-      description: "Jane Smith has joined the platform",
-      time: "3 hours ago",
-      unread: false,
-    },
-    {
-      id: 4,
-      type: "message",
-      title: "Payment received",
-      description: "You received a payment of 1500 FRW",
-      time: "5 hours ago",
-      unread: false,
-    },
-  ]
-
-  const unreadCount = notifications.filter((n) => n.unread).length
+  const [unreadCount,setUnreadCount] = useState(0)
+  const [notifications, setNotifications] = useState([])
+  const location = useLocation()
+  useEffect(()=>{
+      setNotificationDropdownOpen(false)
+  },[location])
+   const getUnreadNotification = async()=>{
+    try {
+        const { data } = await unreadNotifications()
+         setUnreadCount(data.unreadCount)
+    } catch (error) {
+      console.log(error.message)
+    }
+   }
+     const getNotifications = async ()=>{
+       try {
+           const {data} = await fetchNotifications()
+           setNotifications(data)
+       } catch (error) {
+         console.log(error.message)
+       }
+     }
 
   
+  useEffect(()=>{
+      getUnreadNotification()
+      getNotifications()
+  },[])
+
   const googleTranslateRef = useRef(null)
   useEffect(()=>{
     let intervalId;
@@ -104,17 +93,21 @@ export default function Header({ toggleSidebar, user, logout }) {
   }, [])
 
   
+  
+
+
   const getNotificationIcon = (type) => {
     switch (type) {
-      case "message":
-        return <MessageSquare size={16} className="text-blue-500" />
-      case "alert":
-        return <AlertCircle size={16} className="text-red-500" />
+      case "deposit":
+        return <MessageSquare size={20} className="text-blue-500" />
+      case "withdrawal":
+        return <AlertCircle size={20} className="text-red-500" />
+      case "new_account":
+        return <CheckCircle size={20} className="text-green-500" />
       default:
-        return <Mail size={16} className="text-gray-500" />
+        return <Mail size={20} className="text-gray-500" />
     }
   }
-
 
   return (
     <header className="bg-white h-24 lg:h-16 px-4 flex items-center justify-between border-b border-gray-300 shadow-sm w-full z-64 sticky top-0">
@@ -166,23 +159,23 @@ export default function Header({ toggleSidebar, user, logout }) {
                     }`}
                   >
                     <div className="flex items-start space-x-3">
-                      <div className="flex-shrink-0 mt-1">{getNotificationIcon(notification.type)}</div>
+                      <div className="flex-shrink-0 mt-1">{getNotificationIcon(notification.not_type)}</div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between">
-                          <p className="text-sm font-medium text-gray-900 truncate">{notification.title}</p>
-                          {notification.unread && <div className="w-2 h-2 bg-blue-500 rounded-full"></div>}
+                          <p className="text-sm font-medium text-gray-900 truncate">{notification.from.name}</p>
+                          {notification.readBy.includes(user._id) && <div className="w-2 h-2 bg-blue-500 rounded-full"></div>}
                         </div>
                         <p className="text-sm text-gray-500 mt-1">{notification.description}</p>
-                        <p className="text-xs text-gray-400 mt-1">{notification.time}</p>
+                        <p className="text-xs text-gray-400 mt-1">{notification.createdAt.split("T")[0]}</p>
                       </div>
                     </div>
                   </div>
                 ))}
               </div>
               <div className="p-3 border-t">
-                <button className="w-full text-center text-sm text-blue-600 hover:text-blue-800 font-medium">
+                <Link to="/dashboard/notifications" className="w-full text-center text-sm text-blue-600 hover:text-blue-800 font-medium">
                   View all notifications
-                </button>
+                </Link>
               </div>
             </div>
           )}

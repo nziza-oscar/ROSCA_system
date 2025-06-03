@@ -44,8 +44,11 @@ const DepositSlice = createSlice({
        state.success = "Deposited Successfully"
    
     })
-
-
+    .addCase(createDeposit.rejected, (state,action)=>{
+          state.loading = false;
+          state.error = action.payload.message
+      
+    })
     .addCase(deleteDeposit.pending, (state)=>{
       state.loading = false
       state.error = null

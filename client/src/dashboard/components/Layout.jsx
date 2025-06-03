@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { fetchMyData, fetchUsers } from "../../actions/users"
 import { logout } from "../../reducers/users/authSlice"
 import { fetchDeposits, getAllUserBalances, skippedDeposit } from "../../actions/dashboard"
+import useNotificationChecker from "../../lib/useNotificationChecker"
 
 export default function Layout() {
    const [screenSize, setScreenSize] = useState("");
@@ -86,6 +87,7 @@ export default function Layout() {
     setOpenSidebar((prev)=>!prev)
    }
 
+   useNotificationChecker()
 
    
   return (
@@ -99,7 +101,7 @@ export default function Layout() {
           </main>
           <footer className="py-6 mt-auto">
           <div className="container mx-auto text-center text-gray-500">
-            <p>All right is reserved by stev 2025</p>
+            <p>All right is reserved by ISHEMA &COPY; {new Date().getFullYear()}</p>
           </div>
         </footer>
       </div>

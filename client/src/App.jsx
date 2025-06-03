@@ -27,9 +27,10 @@ const Savings = lazy(()=>import("./dashboard/pages/Savings"))
 const DepositRequest = lazy(()=>import("./dashboard/pages/DepositRequest"))
 const Withdrawal = lazy(()=>import("./dashboard/pages/Withdrawals"))
 const TransactionsPage = lazy(()=>import("./dashboard/pages/TransactionsPage"))
+const NotificationsPage = lazy(()=>import("./dashboard/pages/Notification"))
 import ErrorBoundary from "./hooks/ErrorBoundary";
 
-// ___________end dashboard___________
+
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
@@ -47,6 +48,7 @@ const router = createBrowserRouter(
         <Route path="transactions/:client_id/details" element={<Delaying><TransactionsPage/></Delaying>} />
         <Route path="withdrawal" element={<Delaying><Withdrawal/></Delaying>} />
         <Route path="deposit-request" element={<Delaying><DepositRequest/></Delaying>}/>
+        <Route path="notifications" element={<Delaying><NotificationsPage/></Delaying>}/>
         <Route path="*" element={<NotFoundPage />} />
       </Route>
 

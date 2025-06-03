@@ -17,13 +17,10 @@ export default function HomePage() {
           <div>
             <h2 className="text-4xl font-bold text-blue-600 mb-6">WELCOME</h2>
             <p className="mb-6">
-              It is a long established fact that are reader will be distracted by the readable content of a page when
-              looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of
-              letters, as opposed to using'
+              Welcome to <span translate="no" className="font-bold">Ishema Saving Group</span> where your savings are safe, simple, and always within reach. Whether you save daily or randomly, Ishema is here to help you grow your money and access it whenever you need it. Join a trusted community built on accountability, transparency, and empowerment. Your financial freedom starts here.
             </p>
-            <p className="mb-6">Content here, content here', making it look like readable English</p>
             <div className="flex space-x-4">
-              <button className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded">Learn more</button>
+
               <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded">Sign In</button>
             </div>
           </div>
@@ -33,20 +30,17 @@ export default function HomePage() {
       {/* About Section */}
       <section className="py-16 px-4 bg-white">
         <div className="container mx-auto">
-          <h2 className="text-4xl font-bold text-blue-600 text-center mb-16">ABOUT</h2>
+          <h2 className="text-4xl font-bold text-blue-600 mb-16">ABOUT</h2>
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div className="hidden lg:block rounded-lg">
              <img src={img2} className="w-"/>
             </div>
             <div className="bg-gray-100 p-8 rounded-lg">
               <p className="mb-8">
-                We are is a long established fact that a reader will be distracted by the readable content of a page
-                when looking at its layout The point of using Lorem Ipsum is that it has a more-or-less normal
-                distribution of letters,
+                <span translate="no" className="font-bold">Ishema Saving Group</span> is a community-driven financial support system designed to make saving money easy and reliable for everyone. We offer a flexible savings model where members can contribute daily or whenever they choose. 
               </p>
               <p>
-                We are is a long established fact that a reader will be distracted by the readable content of a page
-                when looking at its layout
+             Members have full access to their savings records, including deposits and withdrawals, empowering them with transparency and control over their finances.
               </p>
             </div>
           </div>

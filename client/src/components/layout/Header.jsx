@@ -87,14 +87,14 @@ const Header = () => {
                       <li>
                         <Link to="/" className="py-2 border-white flex items-center gap-3"> <Home size={16}/> <span>Home</span> </Link>
                       </li>
-                      <li>
+                      {/* <li>
                         <Link to="/mission" className="py-2 border-white flex items-center gap-3"> <Book size={16}/> <span>Mission</span> </Link>
                       </li>
                       <li>
                     
                         <Link to="/help" className="py-2 border-white flex items-center gap-3"> <CircleHelp size={16}/> <span>Help</span> </Link>
 
-                      </li>
+                      </li> */}
                       <li>
                     
                         <Link to="/login" className="py-2 border-white flex items-center gap-3"> <LogIn size={16}/> <span translate='no'>Login</span> </Link>
@@ -126,7 +126,7 @@ const Header = () => {
                       <li>
                         <NavLink to="/" className="py-2 border-white">Home </NavLink>
                       </li>
-                      <li>
+                      {/* <li>
                         <Link to="/mission" className="py-2 hover:border-b-2 hover:border-white whitespace-nowrap">
                       Mission
                     </Link></li>
@@ -134,7 +134,7 @@ const Header = () => {
                          <Link to="/how" className="py-2 hover:border-b-2 hover:border-white whitespace-nowrap">
                           How to
                         </Link>
-                      </li>
+                      </li> */}
                       <li>
                          <Link to="/login" className="py-2 hover:border-b-2 hover:border-white whitespace-nowrap">
                       Login

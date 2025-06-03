@@ -29,7 +29,7 @@ export const  createDeposit = createAsyncThunk("Deposit/create",
         } catch (error) {
             return thunkAPI.rejectWithValue({
                 status:"ERROR",
-                message: error.response?.data?.message || "Fetching categories failed"
+                message: error.response?.data?.message || "Failed to create a deposit"
             })
         }
     }

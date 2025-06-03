@@ -21,10 +21,9 @@ export default function NotificationFilters({
 
   const categories = [
     { value: "all", label: "All Categories" },
-    { value: "system", label: "System" },
-    { value: "user", label: "User Activity" },
-    { value: "payment", label: "Payments" },
-    { value: "security", label: "Security" },
+    { value: "new_account", label: "New Users" },
+    { value: "deposit", label: "Payments" },
+    { value: "withdrawals", label: "Withdrawal" },
   ]
 
   const priorities = [
