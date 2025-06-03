@@ -6,19 +6,43 @@ const Deposit = require("../models/deposits")
 const Withdrawal = require('../models/Withdrawal');
 const {uploadToCloudinary,deleteFromCloudinary} = require("./cloudinaryService")
 const mongoose = require("mongoose")
+const {notify} = require("./notificationController")
 
 const User = require("../models/User")
+
 exports.createDeposit = async (req, res) => {
   try {
-    const {amount,date} = req.body
-    if(!req.file) return res.json({message: "No proof were given"})
-    if(!req.userId) return res.status(403).json({message: "Unauthorized action"})
-    const fileBuffer = req.file.buffer
-    const result = await uploadToCloudinary(fileBuffer)
-    
-    let deposit = new Deposit({amount: amount,depositedAt:date, proof:{url: result.secure_url, public_id: result.public_id}});
-        deposit.depositedBy = req.userId
+    const { amount, date } = req.body;
+
+    if (!req.file) return res.json({ message: "No proof were given" });
+    if (!req.userId) return res.status(403).json({ message: "Unauthorized action" });
+
+    const fileBuffer = req.file.buffer;
+    const result = await uploadToCloudinary(fileBuffer);
+
+    const deposit = new Deposit({
+      amount,
+      depositedAt: date,
+      proof: {
+        url: result.secure_url,
+        public_id: result.public_id
+      },
+      depositedBy: req.userId
+    });
+
     const saved = await deposit.save();
+
+    const admins = await User.find({ role: 'admin' });
+    const adminIds = admins.map(admin => admin._id);
+
+    const notification = await notify({
+      from: req.userId,
+      to: adminIds,
+      not_type: 'deposit',
+      description: `A deposit of ${amount} FRW was submitted and is pending approval.`
+    });
+    console.log(notification)
+
     res.status(201).json(saved);
   } catch (err) {
     res.status(400).json({ error: err.message });
@@ -28,7 +52,7 @@ exports.createDeposit = async (req, res) => {
 exports.getAllDeposits = async (req, res) => {
   try {
     let filter = {};
-     const {startDate,endDate,all} = req.query
+     const {startDate,endDate} = req.query
      const userId = req.userId;
       
 

@@ -1,8 +1,8 @@
 const User = require('../models/User');
-const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto'); // For generating reset tokens
 const sendEmail = require('../utils/sendEmail'); // Utility for sending emails
+const {notify} = require("./notificationController")
 // Helper function to generate JWT token
 const generateToken = (userId) => {
   return jwt.sign({ id: userId }, process.env.JWT_SECRET, {
@@ -43,12 +43,8 @@ exports.systemUsers = async(req,res)=>{
 
 
 
-//  create user
-
-
 exports.createUser = async(req,res)=>{
   try {
-    //  check if user does not exit
     const { name,email,phone,role,password,idno } = req.body
      const userExist = await User.findOne({email: email})
 
@@ -56,44 +52,41 @@ exports.createUser = async(req,res)=>{
     if(userExist) return res.status(403).json({message: "User already exist"})
      const newUser = new User({name,email,phone,role,password,idno})
      await newUser.save()
-
+     
      return res.json(newUser)
   } catch (error) {
     return res.status(400).json({message: error.message})
   }
 }
 
-// @desc    Register a new user
-// @route   POST /api/auth/register
-// @access  Public
+
 
 exports.register = async (req, res) => {
   try {
-    const { names:name, email, password, phone,role,idno, position } = req.body;
+    const { names: name, email, password, phone, role, idno, position } = req.body;
 
-    // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: 'User already exists' });
     }
 
-    // Create new user
-    const user = await User.create({
-      name,
-      email,
-      password,
-      phone,
-      position,
-      idno,
-      role
+    const user = await User.create({ name, email, password, phone, position, idno, role });
+
+    // Get all admins
+    const admins = await User.find({ role: 'admin' });
+    const adminIds = admins.map((admin) => admin._id);
+
+    // Notify all admins
+    await notify({
+      from: user._id,
+      to: adminIds,
+      not_type: 'new_account',
+      description: `${user.name} has created a new account.`,
     });
 
-    // Generate JWT token
-    const token = generateToken({_id:user._id,role:user.role,name: user.name, email:user.email});
+    const token = generateToken({ _id: user._id, role: user.role, name: user.name, email: user.email });
 
-
-    // Send response with token
-  return  res.status(201).json({
+    return res.status(201).json({
       success: true,
       token,
       user: {
@@ -104,9 +97,10 @@ exports.register = async (req, res) => {
       },
     });
   } catch (err) {
-   return  res.status(500).json({ message: err.message });
+    return res.status(500).json({ message: err.message });
   }
 };
+
 
 // @desc    Login user
 // @route   POST /api/auth/login

@@ -5,29 +5,23 @@ const cors = require('cors');
 const app = express();
 const port = 5000;
 require('dotenv').config();
-// Middleware
 app.use(cors());
 app.use(bodyParser.json());
-
-// MongoDB Connection
-mongoose.connect(process.env.DBURL, {
+mongoose.connect(process.env.MONGO_URI, {
 }).then(() => console.log('MongoDB connected')).catch(err => console.log(err));
-
-// Import Routes
 const userRoutes = require('./routes/userRoutes');
 const authRoutes = require('./routes/authRoutes');
 const depositRoutes = require("./routes/depositRoutes")
 const withdrawalRoutes = require("./routes/withdrawalRoutes")
-// Use Routes
-
+const notificationRoutes = require("./routes/notificationRoutes")
 app.use("/home",(req,res)=>{
-  return res.json({message: "welcome to our ishema platform"})
+  return res.json({message: "welcome to ishema API's platform"})
 })
 app.use('/api/users', userRoutes);
 app.use('/api/auth', authRoutes);
 app.use("/api/deposit", depositRoutes)
 app.use("/api/withdrawals", withdrawalRoutes)
-
+app.use("/api/notification", notificationRoutes)
 app.use((req,res,next)=>{
    
   return res.status(404).json({message: "404: ROUTE NOT FOUND"})
